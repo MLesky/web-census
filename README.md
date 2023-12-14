@@ -1,70 +1,121 @@
-# Getting Started with Create React App
+#
+**## WEB CENSUS APPLICATION**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Task:
 
-## Available Scripts
+Build a beautiful web application which allows users to make a census of the population of a country. The platform allows to store the information as follow:
 
-In the project directory, you can run:
+- Only users above 21 years are permitted to register on the platform
+- A user registers with the description (number of male and female) of the children he/she has
+- Of late children are not considered
+- Each user has to indicate the number of children he/she has who are above and under 21 years old
+- Users also indicate their names, address, place and date of birth,...
+- The platform should be able to generate the list of registered users (the platform gives possibility to download)
+- The platform should be able to display statistics (total number of male, female, under 21,....) per region
 
-### `npm start`
+## Users
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. **Admins**
+ Admins can register users, view statistics and info about users and download the list of registered uses
+2. **Users**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Users can register, view and update their information
 
-### `npm test`
+## Features:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1.
+### Registration
 
-### `npm run build`
+Users register with the following information;
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Firstname
+- Secondname
+- Surname
+- Date of birth (least date must be 21 years ago from current date)
+- Gender
+- Number of alive male and female children below 21 years
+- Number of alive male and female children above 20 years
+- Place of birth
+- Address
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+          - Region, town, division, sub division, village, other ...
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1.
+### Update
 
-### `npm run eject`
+Users should be able to update their information such as address and number of children alive
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1.
+### Download
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Admin should be able to download a pdf for certain information such as list of registered users
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1.
+### Statistics
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The platform should display statistics from all the registered users in the form of bars and charts
 
-## Learn More
+1.
+### Search/Filter
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Admins should be able to search and filter users, places, etc
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Statistics
 
-### Code Splitting
+1.
+### Country (The whole system)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Total number registered
+- Average Age
+- Oldest Age
+- All registered users (Table)
+- Male to female percentage (pie chart)
+- Number of users per region (bar chart)
+- Number of users per age group/date of birth (bar chart) _(age group is set by an age step integer value)_
+- Number of users per place of birth (bar chart)
 
-### Analyzing the Bundle Size
+### Region
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Total number registered
+- Average Age
+- Oldest Age
+- All registered users (Table)
+- Male to female percentage (pie chart)
+- Number of users per division (bar chart)
+- Number of users per age group/date of birth (bar chart) _(age group is set by an age step integer value)_
+- Number of users per place of birth (bar chart)
 
-### Making a Progressive Web App
+### Division
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Total number registered
+- Average Age
+- Oldest Age
+- All registered users (Table)
+- Male to female percentage (pie chart)
+- Number of users per sub-division, village and town (bar chart)
+- Number of users per age group/date of birth (bar chart) _(age group is set by an age step integer value)_
+- Number of users per place of birth (bar chart)
 
-### Advanced Configuration
+## Navigation and Pages
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### User
 
-### Deployment
+- Registration page
+- Login
+- Profile page (View info and update)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Admin
 
-### `npm run build` fails to minify
+- Registration page/form **(register new users)**
+- Login
+- Dashboard
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    - Home/Default/Country
+    - Regions tab (View regions)
+    - Divisions tab (View divisions)
+    - Users tab (view all users)
+
+## UI/UX Designs
+
+- [Design](https://www.figma.com/file/6a44OaA92bbthgsrVPdpLO/CHIELE-CENSUS?type=design&node-id=0%3A1&mode=design&t=aMNMaaJrTzBXBiqe-1)
+- [Prototype](https://www.figma.com/proto/FADLwPUjddQtKD36Xh3PQU/School-Docs?type=design&node-id=401-740&t=wB9waiirRCfAVOFI-0&scaling=min-zoom&page-id=1%3A6&starting-point-node-id=401%3A740)

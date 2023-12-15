@@ -6,7 +6,7 @@ import { NavLink, Outlet } from "react-router-dom";
 const Navbar = () => {
   return (
     <Stack>
-      <Paper sx={{ padding: 2 }} color="primary" elevation={4} className="bg-2">
+      <Paper sx={{ padding: 2, borderRadius: 0 }} color="primary" elevation={4} className="bg-2">
         <Stack
           direction="row"
           justifyContent="space-between"

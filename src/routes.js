@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom"
 import { Navbar } from "./components";
 import { routeNames } from "./constants";
-import { RegisterPage } from "./pages";
+import { MainDashboard, RegisterPage } from "./pages";
 
 const routes = createBrowserRouter([
     {
@@ -15,7 +15,7 @@ const routes = createBrowserRouter([
         children: [
             {
                 path: '',
-                element: <div>Hello There</div>
+                element: <MainDashboard />
             }
         ]
     },

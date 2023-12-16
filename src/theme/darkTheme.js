@@ -1,20 +1,20 @@
 import { createTheme } from "@mui/material/styles";
 
-let lightTheme = createTheme({
+let darkTheme = createTheme({
   palette: {
+    mode: 'dark',
+
     primary: {
       main: "#2EA6C6",
-    // dark:
     },
     secondary: {
       main: "#2F1F3E",
     },
 
-    custom: {
-        light: '#f5efff',
-        dark: '#252525'
+    background: {
+        default: '#121212',
     }
   },
 });
 
-export default lightTheme;
+export default darkTheme;

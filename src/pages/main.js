@@ -95,7 +95,7 @@ const MainDashboard = () => {
   }
 
   return (
-    <Stack sx={{ padding: 1 }} gap={2} alignItems="center">
+    <Stack sx={{ padding: 1 }} gap={1} alignItems="center">
       <Paper
         sx={{
           padding: 1,
@@ -153,7 +153,7 @@ const MainDashboard = () => {
       <Grid
         container
         direction="row"
-        spacing={2}
+        spacing={1}
         justifyContent="space-between"
       >
         <Grid item xs={12} md={4} lg={3}>

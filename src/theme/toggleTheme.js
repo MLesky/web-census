@@ -32,7 +32,7 @@ function ToggleColorMode({ children }) {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <Box sx={{ backgroundColor: theme.palette.background.default }}>
+        <Box sx={{ backgroundColor: theme.palette.background.default, width: '100vw', minHeight: '100vh' }}>
           {children}
         </Box>
       </ThemeProvider>

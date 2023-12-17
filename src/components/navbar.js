@@ -1,17 +1,31 @@
 import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
 import { logo } from "../assets";
 import { appName, routeNames } from "../constants";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Add, Brightness2, Brightness4 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ColorModeContext } from "../theme/toggleTheme";
 import { RegisterPage } from "../pages";
 import RegisterUserForm from "./registerUserForm";
+import { AuthContext } from "../authenticate/context";
 
 const Navbar = () => {
    const theme = useTheme()
    const colorMode = useContext(ColorModeContext)
+   const userSession = useContext(AuthContext)
+   const navigate = useNavigate()
+   const [loading, setLoading] = useState(true)
+   console.log('User session', userSession)
+
+   useEffect(
+     () => {
+       if(userSession.username === ''){
+          navigate('/login')
+       }
+     },
+     [userSession]
+   )
    const [openRegisterForm, setOpenRegisterForm] = useState(false)
 
    const handleCloseRegisterForm = () => setOpenRegisterForm(false)

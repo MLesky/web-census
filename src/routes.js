@@ -1,3 +1,4 @@
+import Login from "./authenticate/login";
 import { createBrowserRouter } from "react-router-dom"
 import { Navbar } from "./components";
 import { routeNames } from "./constants";
@@ -7,6 +8,11 @@ const routes = createBrowserRouter([
     {
         path: routeNames.register,
         element: <RegisterPage />
+    },
+
+    {
+        path: routeNames.login,
+        element: <Login />
     },
 
     {

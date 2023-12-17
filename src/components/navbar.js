@@ -4,12 +4,18 @@ import { appName, routeNames } from "../constants";
 import { NavLink, Outlet } from "react-router-dom";
 import { Add, Brightness2, Brightness4 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ColorModeContext } from "../theme/toggleTheme";
+import { RegisterPage } from "../pages";
+import RegisterUserForm from "./registerUserForm";
 
 const Navbar = () => {
    const theme = useTheme()
    const colorMode = useContext(ColorModeContext)
+   const [openRegisterForm, setOpenRegisterForm] = useState(false)
+
+   const handleCloseRegisterForm = () => setOpenRegisterForm(false)
+   console.log('onclose: ', handleCloseRegisterForm, typeof(handleCloseRegisterForm))
 
   return (
     <Stack>
@@ -58,7 +64,7 @@ const Navbar = () => {
           </Stack>
 
           <Stack direction="row" spacing={2}>
-              <IconButton>
+              <IconButton onClick={() => setOpenRegisterForm(true)}>
                 <Add sx={{fontSize: 30, color: 'white'}} />
               </IconButton>
               <IconButton onClick={colorMode.toggleColorMode}>
@@ -67,6 +73,8 @@ const Navbar = () => {
           </Stack>
         </Stack>
       </Paper>
+
+      <RegisterUserForm open={openRegisterForm} handleClose={handleCloseRegisterForm} />
 
       <Outlet />
     </Stack>

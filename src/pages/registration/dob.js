@@ -1,39 +1,49 @@
 import { Button, Stack, TextField, Typography } from "@mui/material";
 
-const DateOfBirth = ({index, user, errors, setIndex, setUser, setErrors }) => {
-
+const DateOfBirth = ({
+  user,
+  errors,
+  setUser,
+  showText = true,
+}) => {
   return (
     <Stack sx={{ maxWidth: "600px" }}>
-      <Typography
-        variant="h6"
-        align="center"
-        sx={{ 
-          width: "100%", 
-          maxWidth: "400px" 
-        }}
-      >
-        Welcome to CHIELE CENSUS
-      </Typography>
-      <Typography
-        variant="h6"
-        align="center"
-        sx={{ 
-          width: "100%", 
-          maxWidth: "400px",
-          fontWeight: 'bold',
-        }}
-      >
-        Please take a moment to provide us with your valuable information
-      </Typography>
-      <Typography
-        sx={{
-          width: "100%",
-          maxWidth: "400px",
-          marginY: "20px",
-        }}
-      >
-        You must be alteast 22 years old to proceed.
-      </Typography>
+      {showText && (
+        <Typography
+          variant="h6"
+          align="center"
+          sx={{
+            width: "100%",
+            maxWidth: "400px",
+          }}
+        >
+          Welcome to CHIELE CENSUS
+        </Typography>
+      )}
+      {showText && (
+        <Typography
+          variant="h6"
+          align="center"
+          sx={{
+            width: "100%",
+            maxWidth: "400px",
+            fontWeight: "bold",
+          }}
+        >
+          Please take a moment to provide us with your valuable information
+        </Typography>
+      )}
+      {showText && (
+        <Typography
+          sx={{
+            width: "100%",
+            maxWidth: "400px",
+            marginY: "20px",
+          }}
+        >
+          You must be alteast 22 years old to proceed.
+        </Typography>
+      )}
       <TextField
         label="Date of birth"
         type="date"

@@ -35,28 +35,18 @@ const RegisterPage = () => {
 
   const views = [
     <DateOfBirth
-      index={index}
       user={user}
       errors={errors}
-      setIndex={setIndex}
       setUser={setUser}
-      setErrors={setErrors}
     />,
     <PersonalInfo
-      index={index}
       user={user}
       errors={errors}
-      setIndex={setIndex}
       setUser={setUser}
-      setErrors={setErrors}
     />,
     <NumberOfChildren
-      index={index}
       user={user}
-      errors={errors}
-      setIndex={setIndex}
       setUser={setUser}
-      setErrors={setErrors}
     />,
     <ThankUi />
   ];

@@ -3,27 +3,26 @@ import { useEffect } from "react";
 import { AutoCompleteInput } from "../../components";
 
 const PersonalInfo = ({
-  index,
   user,
   errors,
-  setIndex,
   setUser,
-  setErrors,
+  showText = true,
 }) => {
-
-  const places = ["", "Nkwen", "Bafut", "Bali", "Babanki", "Kumbo"]
+  const places = ["", "Nkwen", "Bafut", "Bali", "Babanki", "Kumbo"];
 
   return (
     <Stack sx={{ maxWidth: "600px" }} gap={2}>
-      <Typography
-        sx={{
-          width: "100%",
-          minWidth: "400px",
-          marginTop: "10px",
-        }}
-      >
-        Please fill in the fields.
-      </Typography>
+      {showText && (
+        <Typography
+          sx={{
+            width: "100%",
+            minWidth: "400px",
+            marginTop: "10px",
+          }}
+        >
+          Please fill in the fields.
+        </Typography>
+      )}
       <TextField
         label="First name"
         type="text"

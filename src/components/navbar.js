@@ -15,7 +15,6 @@ const Navbar = () => {
    const colorMode = useContext(ColorModeContext)
    const userSession = useContext(AuthContext)
    const navigate = useNavigate()
-   const [loading, setLoading] = useState(true)
    console.log('User session', userSession)
 
    useEffect(

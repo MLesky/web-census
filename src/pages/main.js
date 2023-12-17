@@ -9,6 +9,7 @@ import {
   TableCell,
   TableRow,
   Slider,
+  Skeleton,
 } from "@mui/material";
 import {
   BarChart,
@@ -20,6 +21,17 @@ import {
 import { useEffect, useState } from "react";
 
 const MainDashboard = () => {
+  const [loading, setLoading] = useState(true)
+
+  useEffect(
+    () => {
+      setTimeout(() => {
+        setLoading(false)
+      }, 2000)
+    },
+    [loading]
+  )
+
   const headCount = "20,399,493";
   const noRegions = 10;
   const noDivisions = 58;
@@ -69,7 +81,7 @@ const MainDashboard = () => {
   };
 
   const paperStyles = {
-    padding: 1,
+    padding: loading ? 0 : 1,
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -98,14 +110,15 @@ const MainDashboard = () => {
     <Stack sx={{ padding: 1 }} gap={1} alignItems="center">
       <Paper
         sx={{
-          padding: 1,
+          padding: loading ? 0 : 1,
           width: "100%",
           display: "flex",
           justifyContent: "center",
         }}
-        elevation={5}
+        elevation={loading ? 0 : 5}
       >
-        <Stack
+        {loading && <Skeleton variant='rounded' width='100%' height={60}/>}
+        {!loading && <Stack
           direction="row"
           flexWrap="wrap"
           justifyContent="space-between"
@@ -148,7 +161,7 @@ const MainDashboard = () => {
               {increaseRate}
             </Typography>
           </Stack>
-        </Stack>
+        </Stack>}
       </Paper>
       <Grid
         container
@@ -157,9 +170,10 @@ const MainDashboard = () => {
         justifyContent="space-between"
       >
         <Grid item xs={12} md={4} lg={3}>
-          <Paper elevation={5} sx={paperStyles}>
-            <Typography>Gender Ratio</Typography>
-            <PieChart
+          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
+            {loading && <Skeleton variant='rounded' width='100%' height='100%'/>}
+            {!loading && <Typography>Gender Ratio</Typography>}
+            {!loading && <PieChart
               series={[
                 {
                   //   arcLabel: (item) => `(${item.value})`,
@@ -168,14 +182,15 @@ const MainDashboard = () => {
               ]}
               width={300}
               height={200}
-            />
+            />}
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={8} lg={5}>
-          <Paper elevation={5} sx={paperStyles}>
-            <Typography>Head Counts by regions</Typography>
-            <BarChart
+          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
+          {loading && <Skeleton variant='rounded' width='100%' height={300}/>}
+            {!loading && <Typography>Head Counts by regions</Typography>}
+            {!loading && <BarChart
               //   xAxis={regionBarChartData.xAxis}
               //   series={regionBarChartData.series}
               dataset={regionData}
@@ -185,14 +200,15 @@ const MainDashboard = () => {
               width={500}
               height={300}
               sx={{ padding: "19px", overflow: "visible" }}
-            />
+            />}
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={5} lg={4}>
-          <Paper elevation={5} sx={paperStyles}>
-            <Typography>Yearly Increase</Typography>
-            <LineChart
+          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
+          {loading && <Skeleton variant='rounded' width='100%' height='100%'/>}
+           {!loading && <Typography>Yearly Increase</Typography>}
+            {!loading && <LineChart
               xAxis={[
                 { data: ["2018", "2019", "2020", "2021", "2022", "2023"] },
               ]}
@@ -206,14 +222,15 @@ const MainDashboard = () => {
               width={400}
               height={200}
               sx={{ padding: "19px", overflow: "visible" }}
-            />
+            />}
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={7} lg={5}>
-          <Paper elevation={5} sx={paperStyles}>
-            <Typography>Head Counts by Age Group</Typography>
-            <BarChart
+          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
+          {loading && <Skeleton variant='rounded' width='100%' height='100%'/>}
+            {!loading && <Typography>Head Counts by Age Group</Typography>}
+            {!loading && <BarChart
               xAxis={[
                 {
                   scaleType: "band",
@@ -244,13 +261,13 @@ const MainDashboard = () => {
               width={500}
               height={300}
               sx={{ padding: "19px", overflow: "visible" }}
-            />
+            />}
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={12} lg={7}>
-          <Paper elevation={5} sx={paperStyles}>
-            <Typography>Children</Typography>
+          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
+            {!loading && <Typography>Children</Typography>}
             <Grid
               container
               direction="row"
@@ -258,7 +275,8 @@ const MainDashboard = () => {
               justifyContent="space-between"
             >
               <Grid item xs={12} md={6}>
-                <Table>
+              {loading && <Skeleton variant='rectangular' width='100%' height={200}/>}
+                {!loading && <Table>
                   <TableRow>
                     <TableCell>Count</TableCell>
                     <TableCell>
@@ -295,10 +313,11 @@ const MainDashboard = () => {
                       </Typography>
                     </TableCell>
                   </TableRow>
-                </Table>
+                </Table>}
               </Grid>
               <Grid item xs={12} md={6}>
-                <PieChart
+              {loading && <Skeleton variant='circular' width={100} height={100}/>}
+                {!loading && <PieChart
                   series={[
                     {
                       //   arcLabel: (item) => `(${item.value})`,
@@ -318,10 +337,11 @@ const MainDashboard = () => {
                   height={100}
                 >
                   <PieCenterLabel>42%</PieCenterLabel>
-                </PieChart>
+                </PieChart>}
               </Grid>
               <Grid item xs={12} md={6}>
-                <PieChart
+              {loading && <Skeleton variant='circular' width={100} height={100}/>}
+                {!loading && <PieChart
                   series={[
                     {
                       //   arcLabel: (item) => `(${item.value})`,
@@ -344,10 +364,11 @@ const MainDashboard = () => {
                   ]}
                   width={320}
                   height={100}
-                />
+                />}
               </Grid>
               <Grid item xs={12} md={6}>
-                <PieChart
+              {loading && <Skeleton variant='circular' width={100} height={100}/>}
+                {!loading && <PieChart
                   series={[
                     {
                       //   arcLabel: (item) => `(${item.value})`,
@@ -370,7 +391,7 @@ const MainDashboard = () => {
                   ]}
                   width={320}
                   height={100}
-                />
+                />}
               </Grid>
             </Grid>
           </Paper>

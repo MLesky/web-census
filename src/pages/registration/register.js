@@ -177,3 +177,4 @@ export default RegisterPage;
 
 
 // TODO: Fix validation for personal Info
+// TODO: Dark theme for registration page

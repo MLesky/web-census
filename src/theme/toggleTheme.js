@@ -7,21 +7,26 @@ import lightTheme from "./lightTheme";
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 function ToggleColorMode({ children }) {
+  const storedMode = localStorage.getItem('mode');
+  // console.log('Stored mode:', storedMode)
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  console.log('Prefers', prefersDarkMode)
-  const [mode, setMode] = useState(prefersDarkMode ? "dark" : "light");
+  // console.log('Prefers', prefersDarkMode)
+  const [mode, setMode] = useState((storedMode == null || storedMode === '') ? prefersDarkMode ? "dark" : "light" : storedMode);
+  // console.log('Mode', mode)
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+        localStorage.setItem('mode', mode === 'dark' ? 'light' : 'dark')
+        // console.log('stores mode', mode === 'dark' ? 'light' : 'dark')
       },
     }),
-    [mode, prefersDarkMode]
+    []
   );
 
   const theme = useMemo(
     () => (mode === "dark" ? darkTheme : lightTheme),
-    [mode]
+    [mode, prefersDarkMode]
   );
 
   return (

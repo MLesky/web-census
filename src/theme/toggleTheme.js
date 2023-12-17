@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createContext, useMemo, useState } from "react";
 import darkTheme from "./darkTheme";
@@ -7,14 +7,16 @@ import lightTheme from "./lightTheme";
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 function ToggleColorMode({ children }) {
-  const [mode, setMode] = useState("light");
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  console.log('Prefers', prefersDarkMode)
+  const [mode, setMode] = useState(prefersDarkMode ? "dark" : "light");
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
       },
     }),
-    []
+    [mode, prefersDarkMode]
   );
 
   const theme = useMemo(

@@ -119,3 +119,20 @@ Admins should be able to search and filter users, places, etc
 
 - [Design](https://www.figma.com/file/6a44OaA92bbthgsrVPdpLO/CHIELE-CENSUS?type=design&node-id=0%3A1&mode=design&t=aMNMaaJrTzBXBiqe-1)
 - [Prototype](https://www.figma.com/proto/FADLwPUjddQtKD36Xh3PQU/School-Docs?type=design&node-id=401-740&t=wB9waiirRCfAVOFI-0&scaling=min-zoom&page-id=1%3A6&starting-point-node-id=401%3A740)
+
+
+### Get Project
+
+#### Clone repo
+    npm clone https://github.com/MLesky/web-census.git
+
+#### Get dependencies
+    cd web-census
+    npm install
+
+#### Run App
+    npm start
+
+### URL
+    / - for register page
+    /dashboard - for dashboard

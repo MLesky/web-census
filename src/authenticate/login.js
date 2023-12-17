@@ -66,13 +66,12 @@ const Login = ({}) => {
         paddingTop: 5,
       }}
     >
-      <Stack sx={{ maxWidth: "600px" }} gap={2}>
+      <Stack sx={{ maxWidth: "600px", mx: 5 }} gap={2}>
         <Typography
           variant="h4"
           color="primary"
           sx={{
             width: "100%",
-            minWidth: "400px",
             marginTop: "10px",
           }}
         >

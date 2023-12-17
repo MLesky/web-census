@@ -1,3 +1,4 @@
+import { useTheme } from "@mui/material/styles";
 import { Button, Stack, TextField, Typography } from "@mui/material";
 
 const DateOfBirth = ({
@@ -6,12 +7,14 @@ const DateOfBirth = ({
   setUser,
   showText = true,
 }) => {
+  const theme = useTheme()
   return (
-    <Stack sx={{ maxWidth: "600px" }}>
+    <Stack sx={{ maxWidth: "600px", mx: 5}}>
       {showText && (
         <Typography
           variant="h6"
           align="center"
+          color='primary'
           sx={{
             width: "100%",
             maxWidth: "400px",
@@ -28,6 +31,7 @@ const DateOfBirth = ({
             width: "100%",
             maxWidth: "400px",
             fontWeight: "bold",
+            color: theme.palette.text.primary
           }}
         >
           Please take a moment to provide us with your valuable information
@@ -39,6 +43,8 @@ const DateOfBirth = ({
             width: "100%",
             maxWidth: "400px",
             marginY: "20px",
+            fontWeight: 'bold',
+            color: theme.palette.text.primary
           }}
         >
           You must be alteast 22 years old to proceed.

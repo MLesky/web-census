@@ -1,6 +1,7 @@
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { AutoCompleteInput } from "../../components";
+import { useTheme } from "@mui/material/styles";
 
 const PersonalInfo = ({
   user,
@@ -9,15 +10,19 @@ const PersonalInfo = ({
   showText = true,
 }) => {
   const places = ["", "Nkwen", "Bafut", "Bali", "Babanki", "Kumbo"];
-
+  const theme = useTheme()
   return (
-    <Stack sx={{ maxWidth: "600px" }} gap={2}>
+    <Stack sx={{ maxWidth: "600px", mx: 5 }} gap={2}>
       {showText && (
         <Typography
           sx={{
             width: "100%",
-            minWidth: "400px",
+            minWidth: {
+              xs: '250px',
+              sm: "400px",
+            },
             marginTop: "10px",
+            color: theme.palette.text.primary
           }}
         >
           Please fill in the fields.

@@ -1,13 +1,15 @@
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import { thankuiImage } from "../../assets";
 import { AutoCompleteInput } from "../../components";
+import { useTheme } from "@mui/material/styles";
 
 const ThankUi = ({}) => {
+  const theme = useTheme()
   return (
     <Stack sx={{ maxWidth: "600px" }} gap={5} alignItems='center'>
       <Typography
         variant="h5"
-        color="secondary"
+        color={theme.palette.mode === 'dark' ? 'primary' : "secondary"}
         sx={{
           width: "100%",
           minWidth: "400px",

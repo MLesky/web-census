@@ -148,7 +148,7 @@ const RegisterPage = () => {
         ))}
       </Stack>
       {views[index]}
-      <Stack direction="row" justifyContent="space-between" sx={{
+      <Stack direction="row" justifyContent="space-around" sx={{
         width: '100%',
         maxWidth: '400px',
       }}>

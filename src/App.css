@@ -4,11 +4,6 @@
   box-sizing: border-box;
 }
 
-.logo {
-  width: 30px;
-  height: 30px;
-}
-
 .bg-1 {
   background-color: #2EA6C6 !important;
 }

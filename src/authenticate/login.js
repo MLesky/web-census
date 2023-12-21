@@ -7,15 +7,18 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { routeNames } from "../constants";
 import { AuthContext } from "./context";
+import { logo, logo2, africanCrowd1, africanCrowd2 } from "../assets";
 
 const Login = ({}) => {
   const navigate = useNavigate();
-  const userSession = useContext(AuthContext)
+  const theme = useTheme();
+  const userSession = useContext(AuthContext);
 
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
@@ -45,7 +48,7 @@ const Login = ({}) => {
         setUsernameError("");
         if (password === adminPassword) {
           setPasswordError("");
-          userSession.createNewSession(username, password)
+          userSession.createNewSession(username, password);
           navigate(routeNames.dashboard);
         } else {
           setPasswordError("Wrong Password");
@@ -57,16 +60,38 @@ const Login = ({}) => {
   };
 
   return (
-    <Box
+    <Stack
+      direction="row"
+      justifyContent="center"
       sx={{
         height: "100vh",
         width: "100vw",
-        display: "flex",
-        justifyContent: "center",
         paddingTop: 5,
+        overflow: "auto",
+        backgroundColor:
+          theme.palette.mode == "light"
+            ? "rgba(255, 255, 255, 0.5)"
+            : "rgba(0, 0, 0, 0.7)",
+        backgroundImage: `url('${africanCrowd2}')`,
+        backgroundSize: "cover",
+        backgroundBlendMode:
+          theme.palette.mode === "light" ? "lighten" : "multiply",
       }}
     >
-      <Stack sx={{ maxWidth: "600px", mx: 5 }} gap={2}>
+      <Stack
+        sx={{
+          width: { xs: "100%", sm: "400px", md: "600px" },
+          backgroundColor:
+            theme.palette.mode == "light"
+              ? "rgba(255, 255, 255, 0.6)"
+              : "rgba(0, 0, 0, 0.5)",
+          mx: 5,
+          padding: 5,
+          borderRadius: 5,
+          height: 'fit-content'
+        }}
+        gap={2}
+      >
         <Typography
           variant="h4"
           color="primary"
@@ -100,11 +125,7 @@ const Login = ({}) => {
             endAdornment: (
               <InputAdornment>
                 <IconButton onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? (
-                    <VisibilityOff />
-                  ) : (
-                    <Visibility />
-                  )}
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
             ),
@@ -118,7 +139,7 @@ const Login = ({}) => {
           Login
         </Button>
       </Stack>
-    </Box>
+    </Stack>
   );
 };
 

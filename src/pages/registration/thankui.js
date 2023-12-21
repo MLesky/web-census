@@ -6,7 +6,7 @@ import { useTheme } from "@mui/material/styles";
 const ThankUi = ({}) => {
   const theme = useTheme()
   return (
-    <Stack sx={{ maxWidth: "600px" }} gap={5} alignItems='center'>
+    <Stack sx={{ maxWidth: "600px", }} spacing={1} alignItems='center'>
       <Typography
         variant="h5"
         color={theme.palette.mode === 'dark' ? 'primary' : "secondary"}
@@ -20,7 +20,7 @@ const ThankUi = ({}) => {
       >
         Thank You For Your Time!
       </Typography>
-      <img src={thankuiImage} alt="thank you" style={{width: '250px'}}/>
+      <img src={thankuiImage} alt="thank you" style={{width: '250px', paddingBottom: '20px'}}/>
     </Stack>
   );
 };

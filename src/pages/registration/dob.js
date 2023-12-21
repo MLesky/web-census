@@ -9,20 +9,7 @@ const DateOfBirth = ({
 }) => {
   const theme = useTheme()
   return (
-    <Stack sx={{ maxWidth: "600px", mx: 5}}>
-      {showText && (
-        <Typography
-          variant="h6"
-          align="center"
-          color='primary'
-          sx={{
-            width: "100%",
-            maxWidth: "400px",
-          }}
-        >
-          Welcome to CHIELE CENSUS
-        </Typography>
-      )}
+    <Stack sx={{ maxWidth: "600px", mx: 5}} spacing={3}>
       {showText && (
         <Typography
           variant="h6"
@@ -50,6 +37,16 @@ const DateOfBirth = ({
           You must be alteast 22 years old to proceed.
         </Typography>
       )}
+      <TextField
+        label="ID Card number"
+        type="text"
+        variant="standard"
+        placeholder="Enter ID Card number"
+        // value={user.dateOfBirth}
+        // helperText={errors.dateOfBirth}
+        // error={errors.dateOfBirth !== ""}
+        // onChange={(e) => setUser({ ...user, dateOfBirth: e.target.value })}
+      />
       <TextField
         label="Date of birth"
         type="date"

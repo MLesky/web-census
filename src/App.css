@@ -4,6 +4,19 @@
   box-sizing: border-box;
 }
 
+.logo-spin {
+  animation: App-logo-spin infinite 20s linear;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .bg-1 {
   background-color: #2EA6C6 !important;
 }

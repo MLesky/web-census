@@ -17,7 +17,7 @@ import ThankUi from "./thankui";
 
 const RegisterPage = () => {
   const theme = useTheme();
-  const [index, setIndex] = useState(3);
+  const [index, setIndex] = useState(0);
   const [user, setUser] = useState({
     dateOfBirth: "",
     firstName: "",

@@ -4,7 +4,7 @@ const routeNames = {
     login: '/login',
     dashboard: '/dashboard',
     people: '/people',
-    region: '/regions',
+    region: 'regions',
     divisions: '/divisions',
     subDivisions: '/sub-divisions',
     about: '/about',

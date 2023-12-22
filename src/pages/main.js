@@ -1,4 +1,12 @@
-import { FemaleOutlined, MaleOutlined, ChildCare, PeopleOutlineSharp, WorkOutline, Elderly, Hail } from "@mui/icons-material";
+import {
+  FemaleOutlined,
+  MaleOutlined,
+  ChildCare,
+  PeopleOutlineSharp,
+  WorkOutline,
+  Elderly,
+  Hail,
+} from "@mui/icons-material";
 import {
   Divider,
   Grid,
@@ -16,7 +24,15 @@ import {
   TableContainer,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { blue, green, grey, orange, pink, purple, yellow } from "@mui/material/colors";
+import {
+  blue,
+  green,
+  grey,
+  orange,
+  pink,
+  purple,
+  yellow,
+} from "@mui/material/colors";
 import {
   BarChart,
   LineChart,
@@ -56,7 +72,7 @@ const MainDashboard = () => {
     "North West",
     "South",
     "South West",
-    "East",
+    "West",
   ];
 
   const regionData = [
@@ -342,51 +358,127 @@ const MainDashboard = () => {
             )}
             {!loading && (
               <TableContainer>
-                <Table size="small" padding="none" sx={{ overflow: "auto" }} className='home-table'>
+                <Table
+                  size="small"
+                  padding="none"
+                  sx={{ overflow: "auto" }}
+                  className="home-table"
+                >
                   <TableHead>
                     <TableRow>
                       <TableCell>Region</TableCell>
-                      <TableCell><PeopleOutlineSharp /></TableCell>
-                      <TableCell><MaleOutlined /></TableCell>
-                      <TableCell><FemaleOutlined /></TableCell>
-                      <TableCell><ChildCare /></TableCell>
-                      <TableCell><Hail /></TableCell>
-                      <TableCell><Elderly /></TableCell>
+                      <TableCell>
+                        <PeopleOutlineSharp />
+                      </TableCell>
+                      <TableCell>
+                        <MaleOutlined />
+                      </TableCell>
+                      <TableCell>
+                        <FemaleOutlined />
+                      </TableCell>
+                      <TableCell>
+                        <ChildCare />
+                      </TableCell>
+                      <TableCell>
+                        <Hail />
+                      </TableCell>
+                      <TableCell>
+                        <Elderly />
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {tableOfRegions.map((region) => {
-                      let males = Math.floor(((Math.random() * 0.7) + 0.2) * region.headCounts);
+                      let males = Math.floor(
+                        (Math.random() * 0.7 + 0.2) * region.headCounts
+                      );
                       let females = region.headCounts - males;
                       let children = Math.floor(
-                        ((Math.random() * 0.4) + 0.15) * region.headCounts
+                        (Math.random() * 0.4 + 0.15) * region.headCounts
                       );
                       let adults = Math.floor(
-                        ((Math.random() * 0.6) + 0.25) * region.headCounts
+                        (Math.random() * 0.6 + 0.25) * region.headCounts
                       );
-                      let elderly = Math.floor((Math.random() * 100000) + 2000);
-                      console.log('color: ', getDivisionResult(region.headCounts, 700000, 1500000))
+                      let elderly = Math.floor(Math.random() * 100000 + 2000);
+                      console.log(
+                        "color: ",
+                        getDivisionResult(region.headCounts, 700000, 1500000)
+                      );
                       return (
                         <TableRow>
                           <TableCell>{region.region}</TableCell>
-                          <TableCell sx={{
-                            backgroundColor: alpha(green[getDivisionResult(region.headCounts, 700000, 1500000)], 0.5)
-                          }}>{region.headCounts}</TableCell>
-                          <TableCell sx={{
-                            backgroundColor: alpha(blue[getDivisionResult(males, 300000, 750000)], 0.5)
-                          }}>{males}</TableCell>
-                          <TableCell sx={{
-                            backgroundColor: alpha(pink[getDivisionResult(females, 300000, 750000)], 0.5)
-                          }}>{females}</TableCell>
-                          <TableCell sx={{
-                            backgroundColor: alpha(yellow[getDivisionResult(children, 250000, 400000)], 0.5)
-                          }}>{children}</TableCell>
-                          <TableCell sx={{
-                            backgroundColor: alpha(purple[getDivisionResult(adults, 400000, 700000)], 0.5)
-                          }}>{adults}</TableCell>
-                          <TableCell sx={{
-                            backgroundColor: alpha(grey[getDivisionResult(elderly, 30000, 60000)], 0.5)
-                          }}>{elderly}</TableCell>
+                          <TableCell
+                            sx={{
+                              backgroundColor: alpha(
+                                green[
+                                  getDivisionResult(
+                                    region.headCounts,
+                                    700000,
+                                    1500000
+                                  )
+                                ],
+                                0.5
+                              ),
+                            }}
+                          >
+                            {region.headCounts}
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              backgroundColor: alpha(
+                                blue[getDivisionResult(males, 300000, 750000)],
+                                0.5
+                              ),
+                            }}
+                          >
+                            {males}
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              backgroundColor: alpha(
+                                pink[
+                                  getDivisionResult(females, 300000, 750000)
+                                ],
+                                0.5
+                              ),
+                            }}
+                          >
+                            {females}
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              backgroundColor: alpha(
+                                yellow[
+                                  getDivisionResult(children, 250000, 400000)
+                                ],
+                                0.5
+                              ),
+                            }}
+                          >
+                            {children}
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              backgroundColor: alpha(
+                                purple[
+                                  getDivisionResult(adults, 400000, 700000)
+                                ],
+                                0.5
+                              ),
+                            }}
+                          >
+                            {adults}
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              backgroundColor: alpha(
+                                grey[getDivisionResult(elderly, 30000, 60000)],
+                                0.5
+                              ),
+                            }}
+                          >
+                            {elderly}
+                          </TableCell>
                         </TableRow>
                       );
                     })}
@@ -623,11 +715,11 @@ const MainDashboard = () => {
 export default MainDashboard;
 
 function getDivisionResult(number, smallest, largest) {
-  if(number > largest) return 900
-  if(number <= smallest) return 50
+  if (number > largest) return 900;
+  if (number <= smallest) return 50;
 
-  let divisionRange = largest - smallest
-  return Math.floor(((number - smallest) / (divisionRange / 8)) + 1) * 100
+  let divisionRange = largest - smallest;
+  return Math.floor((number - smallest) / (divisionRange / 8) + 1) * 100;
 }
 
 //590837

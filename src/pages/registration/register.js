@@ -287,14 +287,23 @@ const RegisterPage = () => {
                     Back
                   </Button>
                 )}
-                {index < 4 && (
+                {index < 3 && (
                   <Button
                     variant="contained"
                     color={theme.palette.mode === 'light' ? 'secondary' : 'primary'}
                     sx={{ marginY: "30px", color: "white" }}
                     onClick={() => validates[index]()}
                   >
-                    {index < 3 ? 'Continue' : 'Submit'}
+                    Continue
+                  </Button>
+                )}
+{index === 3 && (
+                  <Button
+                    variant="contained"
+                    color={theme.palette.mode === 'light' ? 'secondary' : 'primary'}
+                    sx={{ marginY: "30px", color: "white" }}
+                  >
+                    Submit
                   </Button>
                 )}
               </Stack>

@@ -40,3 +40,7 @@
   background-color: #2EA6C6;
   color: #2F1F3E !important;
 }
+
+.home-table td {
+  padding: 2px;
+}

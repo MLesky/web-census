@@ -1,3 +1,5 @@
+import React from "react";
+import axios from "axios";
 import {
   Button,
   Stack,
@@ -17,6 +19,34 @@ import { useTheme } from "@mui/material/styles";
 const ConfirmInfo = ({ user }) => {
   const places = ["", "Nkwen", "Bafut", "Bali", "Babanki", "Kumbo"];
   const theme = useTheme();
+
+  const handleButtonClick = (event) => {
+    console.log('sending data');
+    event.preventDefault();
+
+    // Prepare data for the API call
+    const data = {
+      idNo: "NW94389738IUHY389",
+      first_name: user.firstName,
+      second_name: user.secondName,
+      sur_name: user.surname,
+      gender: user.gender,
+      givenNames: `${user.firstName} ${user.secondName}`,
+      date_of_birth: user.dateOfBirth,
+      place_of_birth: user.placeOfBirth,
+      sub_division: user.subDivision,
+      town_village: user.town,
+      childrenInfo: `${parseInt(user.malesBelow21) + parseInt(user.femalesBellow21)} below 22 and ${parseInt(user.malesAbove21) + parseInt(user.femalesAbove21)} above 21`,
+    };
+
+    axios.post('http://localhost/api/index.php', data).then(function(response){
+        console.log(response.data);
+        // You might want to add logic here for navigation or other actions
+    });
+  };
+
+
+    
   return (
     <Stack sx={{ maxWidth: "500px", mx: 5 }} spacing={2} alignItems='center'>
       <Typography
@@ -33,11 +63,14 @@ const ConfirmInfo = ({ user }) => {
         Please make sure the information you entered in correct before
         proceeding
       </Typography>
+      <Button variant="contained" color="primary" onClick={handleButtonClick}>
+        Submit
+      </Button>
         <Table size='small' sx={{maxWidth: '400px'}}>
           <TableBody>
             <TableRow>
               <TableCell>ID No</TableCell>
-              <TableCell>NW94389738IUHY389</TableCell>
+              <TableCell>"NW94389738IUHY389",</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Surname</TableCell>
@@ -86,5 +119,6 @@ const ConfirmInfo = ({ user }) => {
     </Stack>
   );
 };
+
 
 export default ConfirmInfo;

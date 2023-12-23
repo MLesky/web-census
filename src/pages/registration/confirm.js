@@ -41,7 +41,7 @@ const ConfirmInfo = ({ user }) => {
 
     axios.post('http://localhost/api/index.php', data).then(function(response){
         console.log(response.data);
-        // You might want to add logic here for navigation or other actions
+        
     });
   };
 

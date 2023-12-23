@@ -38,7 +38,8 @@ const ConfirmInfo = ({ user }) => {
       town_village: user.town,
       childrenInfo: `${parseInt(user.malesBelow21) + parseInt(user.femalesBellow21)} below 22 and ${parseInt(user.malesAbove21) + parseInt(user.femalesAbove21)} above 21`,
     };
-
+    
+    //the api call
     axios.post('http://localhost/api/index.php', data).then(function(response){
         console.log(response.data);
         

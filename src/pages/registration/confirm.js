@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Button,
   Stack,
@@ -14,6 +14,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { UserContext } from "../../user/user_context";
 import axios from "axios";
+import { AlertPopper } from "../../components";
 
 const ConfirmInfo = () => {
   const places = ["", "Nkwen", "Bafut", "Bali", "Babanki", "Kumbo"];
@@ -24,9 +25,14 @@ const ConfirmInfo = () => {
   const setErrors = useContext(UserContext).updateErrors;
   const errors = useContext(UserContext).errors;
   const setIndex = useContext(UserContext).setIndex;
+  const [loading, setLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(true);
+  const [responseMessage, setResponseMessage] = useState("");
+  const [severity, setSeverity] = useState("success");
 
   const handleSubmission = () => {
     // Prepare data for the API call
+    setLoading(true);
     const data = {
       id: user.id,
       firstName: user.firstName,
@@ -48,8 +54,22 @@ const ConfirmInfo = () => {
     const response = axios
       .post("http://localhost/web-census/api/index.php", data)
       .then(function (response) {
-        console.log("res is: ", response.data);
-        setIndex(index + 1);
+        
+        let isData = response.data.message !== undefined;
+        let message = isData ? response.data.message : 'An Error Occured'
+        let status = isData ? response.data.status : -1;
+
+        console.log("res is: ", isData, response, message, status);
+        setResponseMessage(message);
+        setSeverity(status == 1 ? "success" : "error");
+
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          if (status == 1) {
+            setIndex(index + 1);
+          }
+        }, 2000);
       });
 
     console.log("Response is: ", response);
@@ -133,19 +153,36 @@ const ConfirmInfo = () => {
                     <TableCell>Below 22</TableCell>
                     <TableCell>{user.malesBelow21}</TableCell>
                     <TableCell>{user.femalesBelow21}</TableCell>
-                    <TableCell>{parseInt(user.malesBelow21) + parseInt(user.femalesBelow21)}</TableCell>
+                    <TableCell>
+                      {parseInt(user.malesBelow21) +
+                        parseInt(user.femalesBelow21)}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Above 21</TableCell>
                     <TableCell>{user.malesAbove21}</TableCell>
                     <TableCell>{user.femalesAbove21}</TableCell>
-                    <TableCell>{parseInt(user.malesAbove21) + parseInt(user.femalesAbove21)}</TableCell>
+                    <TableCell>
+                      {parseInt(user.malesAbove21) +
+                        parseInt(user.femalesAbove21)}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Total</TableCell>
-                    <TableCell>{parseInt(user.malesAbove21)  + parseInt(user.malesBelow21)}</TableCell>
-                    <TableCell>{parseInt(user.femalesBelow21) + parseInt(user.femalesAbove21)}</TableCell>
-                    <TableCell>{parseInt(user.malesBelow21) + parseInt(user.malesAbove21) + parseInt(user.femalesBelow21) + parseInt(user.femalesAbove21)}</TableCell>
+                    <TableCell>
+                      {parseInt(user.malesAbove21) +
+                        parseInt(user.malesBelow21)}
+                    </TableCell>
+                    <TableCell>
+                      {parseInt(user.femalesBelow21) +
+                        parseInt(user.femalesAbove21)}
+                    </TableCell>
+                    <TableCell>
+                      {parseInt(user.malesBelow21) +
+                        parseInt(user.malesAbove21) +
+                        parseInt(user.femalesBelow21) +
+                        parseInt(user.femalesAbove21)}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -179,6 +216,13 @@ const ConfirmInfo = () => {
           Submit
         </Button>
       </Stack>
+      <AlertPopper
+        showAlert={showAlert}
+        handleClose={() => setShowAlert(false)}
+        alertType={severity}
+      >
+        {responseMessage}
+      </AlertPopper>
     </Stack>
   );
 };

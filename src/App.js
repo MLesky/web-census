@@ -5,6 +5,7 @@ import { ToggleColorMode } from "./theme/toggleTheme";
 import { useTheme } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import { UserSession } from "./authenticate/context";
+import { UserContextProvider } from "./user/user_context";
 
 function App() {
   const theme = useTheme();
@@ -14,7 +15,9 @@ function App() {
     <Box className="App">
       <ToggleColorMode>
         <UserSession>
-          <RouterProvider router={routes} />
+          <UserContextProvider>
+            <RouterProvider router={routes} />
+          </UserContextProvider>
         </UserSession>
       </ToggleColorMode>
     </Box>

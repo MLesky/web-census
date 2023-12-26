@@ -1,13 +1,18 @@
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import { AutoCompleteInput } from "../../components";
 import { useTheme } from "@mui/material/styles";
+import { useContext } from "react";
+import { UserContext } from "../../user/user_context";
 
-const NumberOfChildren = ({
-  user,
-  setUser,
-  showText = true,
-}) => {
+const NumberOfChildren = ({showText = true,}) => {
   const theme = useTheme()
+  const index = useContext(UserContext).index;
+  const user = useContext(UserContext).user;
+  const setUser = useContext(UserContext).updateUser;
+  const setErrors = useContext(UserContext).updateErrors;
+  const errors = useContext(UserContext).errors;
+  const setIndex = useContext(UserContext).setIndex;
+
   return (
     <Stack sx={{ maxWidth: "600px", mx: 5 }} gap={3}>
       {showText && (
@@ -32,6 +37,7 @@ const NumberOfChildren = ({
             variant="standard"
             value={user.malesBelow21}
             onChange={(e) => setUser({ ...user, malesBelow21: e.target.value })}
+            min='0'
           />
           <TextField
             label="Females"
@@ -41,6 +47,7 @@ const NumberOfChildren = ({
             onChange={(e) =>
               setUser({ ...user, femalesBelow21: e.target.value })
             }
+            min='0'
           />
         </Stack>
       </Stack>
@@ -54,6 +61,7 @@ const NumberOfChildren = ({
             type="number"
             variant="standard"
             value={user.malesAbove21}
+            min='0'
             onChange={(e) => setUser({ ...user, malesAbove21: e.target.value })}
           />
           <TextField
@@ -61,11 +69,37 @@ const NumberOfChildren = ({
             type="number"
             variant="standard"
             value={user.femalesAbove21}
+            min='0'
             onChange={(e) =>
               setUser({ ...user, femalesAbove21: e.target.value })
             }
           />
         </Stack>
+      </Stack>
+      <Stack
+        direction="row"
+        justifyContent="space-around"
+        sx={{
+          width: "100%",
+          maxWidth: "400px",
+        }}
+      >
+        <Button
+          variant="contained"
+          color={theme.palette.mode === "light" ? "secondary" : "primary"}
+          sx={{ marginY: "30px", color: "white" }}
+          onClick={() => setIndex(index - 1)}
+        >
+          Back
+        </Button>
+        <Button
+          onClick={() => setIndex(index + 1)}
+          variant="contained"
+          color={theme.palette.mode === "light" ? "secondary" : "primary"}
+          sx={{ marginY: "30px", color: "white" }}
+        >
+          Continue
+        </Button>
       </Stack>
     </Stack>
   );

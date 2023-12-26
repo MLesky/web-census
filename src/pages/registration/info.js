@@ -1,16 +1,95 @@
 import { Button, Stack, TextField, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { AutoCompleteInput } from "../../components";
 import { useTheme } from "@mui/material/styles";
+import { UserContext } from "../../user/user_context";
 
-const PersonalInfo = ({
-  user,
-  errors,
-  setUser,
-  showText = true,
-}) => {
+const PersonalInfo = ({ showText = true }) => {
   const places = ["", "Nkwen", "Bafut", "Bali", "Babanki", "Kumbo"];
-  const theme = useTheme()
+  const theme = useTheme();
+  console.log("User Context =>", useContext(UserContext));
+  const index = useContext(UserContext).index;
+  const user = useContext(UserContext).user;
+  const setUser = useContext(UserContext).updateUser;
+  const setErrors = useContext(UserContext).updateErrors;
+  const errors = useContext(UserContext).errors;
+  const setIndex = useContext(UserContext).setIndex;
+
+  const handleValidation = () => {
+    let isOk = true;
+    if (
+      user.firstName === "" ||
+      user.firstName == null ||
+      user.firstName == undefined
+    ) {
+      setErrors({ firstName: "Please enter your first name" });
+      isOk = false;
+    } else {
+      setErrors({ firstName: "" });
+    }
+
+    if (
+      user.surname === "" ||
+      user.surname == null ||
+      user.surname == undefined
+    ) {
+      setErrors({ surname: "Please enter your surname" });
+      isOk = false;
+    } else {
+      setErrors({ surname: "" });
+    }
+
+    if (user.gender === "" || user.gender == null || user.gender == undefined) {
+      setErrors({ gender: "Please select your gender" });
+      isOk = false;
+    } else {
+      setErrors({ gender: "" });
+    }
+
+    if (
+      user.placeOfBirth === "" ||
+      user.placeOfBirth == null ||
+      user.placeOfBirth == undefined
+    ) {
+      setErrors({ placeOfBirth: "Please select your place of birth" });
+      isOk = false;
+    } else {
+      setErrors({ placeOfBirth: "" });
+    }
+
+    if (
+      user.town === "" ||
+      user.town == null ||
+      user.town == undefined
+    ) {
+      setErrors({ town: "please select your town or village" });
+      isOk = false;
+    } else {
+      setErrors({ town: "" });
+    }
+
+    if (
+      user.subDivision === "" ||
+      user.subDivision == null ||
+      user.subDivision == undefined
+    ) {
+      setErrors({ subDivision: "Please select your sub division" });
+      isOk = false;
+    } else {
+      setErrors({ subDivision: "" });
+    }
+
+    console.log("user now", index, user);
+    console.log("errors now", index, errors);
+
+    if (isOk) {
+      console.log("Ok");
+      setIndex(index + 1);
+    } else {
+      console.log("Not Ok");
+    }
+  };
+
   return (
     <Stack sx={{ maxWidth: "600px", mx: 5 }} gap={2}>
       {showText && (
@@ -18,11 +97,11 @@ const PersonalInfo = ({
           sx={{
             width: "100%",
             minWidth: {
-              xs: '250px',
+              xs: "250px",
               sm: "400px",
             },
             marginTop: "10px",
-            color: theme.palette.text.primary
+            color: theme.palette.text.primary,
           }}
         >
           Please fill in the fields.
@@ -109,6 +188,31 @@ const PersonalInfo = ({
         error={errors.town !== ""}
         helperText={errors.town}
       />
+      <Stack
+        direction="row"
+        justifyContent="space-around"
+        sx={{
+          width: "100%",
+          maxWidth: "400px",
+        }}
+      >
+        <Button
+          variant="contained"
+          color={theme.palette.mode === "light" ? "secondary" : "primary"}
+          sx={{ marginY: "30px", color: "white" }}
+          onClick={() => setIndex(index - 1)}
+        >
+          Back
+        </Button>
+        <Button
+          onClick={handleValidation}
+          variant="contained"
+          color={theme.palette.mode === "light" ? "secondary" : "primary"}
+          sx={{ marginY: "30px", color: "white" }}
+        >
+          Continue
+        </Button>
+      </Stack>
     </Stack>
   );
 };

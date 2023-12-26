@@ -42,10 +42,10 @@ const DateOfBirth = ({
         type="text"
         variant="standard"
         placeholder="Enter ID Card number"
-        // value={user.dateOfBirth}
-        // helperText={errors.dateOfBirth}
-        // error={errors.dateOfBirth !== ""}
-        // onChange={(e) => setUser({ ...user, dateOfBirth: e.target.value })}
+        value={user.id}
+        helperText={errors.id}
+        error={errors.id !== ""}
+        onChange={(e) => setUser({ ...user, id: e.target.value })}
       />
       <TextField
         label="Date of birth"

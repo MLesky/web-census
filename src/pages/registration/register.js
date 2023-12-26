@@ -7,6 +7,7 @@ import {
   Grid,
   useTheme,
 } from "@mui/material";
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { logo, africanCrowd1, logo2 } from "../../assets";
 import NumberOfChildren from "./children";
@@ -19,6 +20,7 @@ const RegisterPage = () => {
   const theme = useTheme();
   const [index, setIndex] = useState(0);
   const [user, setUser] = useState({
+    id: "",
     dateOfBirth: "",
     firstName: "",
     secondName: "",
@@ -34,6 +36,7 @@ const RegisterPage = () => {
   });
 
   const [errors, setErrors] = useState({
+    id: "",
     dateOfBirth: "",
     firstName: "",
     secondName: "",
@@ -54,6 +57,12 @@ const RegisterPage = () => {
 
   const validates = [
     () => {
+      if(user.id === '' || user.id === null){
+        setErrors({...errors, id: 'Please enter ID Card Number'});
+      } else {
+        setErrors({...errors, id: ""})
+      }
+
       if (user.dateOfBirth === "") {
         setErrors({ ...errors, dateOfBirth: "Please enter date" });
       } else {
@@ -67,8 +76,11 @@ const RegisterPage = () => {
           });
         } else {
           setErrors({ ...errors, dateOfBirth: "" });
-          setIndex(index + 1);
         }
+      }
+
+      if(errors.id !== '' && errors.dateOfBirth !== ''){
+        setIndex(index + 1);
       }
       console.log("user now", index, user);
       console.log("errors now", index, errors);
@@ -165,6 +177,37 @@ const RegisterPage = () => {
       setIndex(index + 1);
     },
   ];
+
+  const handleButtonClick = (event) => {
+    console.log('sending data');
+    event.preventDefault();
+
+    // Prepare data for the API call
+    const data = {
+      id: user.id,
+      firstName: user.firstName,
+      secondName: user.secondName,
+      surname: user.surname,
+      gender: user.gender,
+      dateOfBirth: user.dateOfBirth,
+      placeOfBirth: user.placeOfBirth,
+      subDivision: user.subDivision,
+      townVillage: user.town,
+      boysBlw_22: 1,
+      girlsBlw_22: 0,
+      girlsAbv_21: 1,
+      boysAbv_21: 2
+    };
+    
+    console.log('data is: ',  data);
+    //the api call
+    const response = axios.post('http://localhost/web-census/api/index.php', data).then(function(response){
+        console.log("res is: ", response.data);
+        setIndex(index + 1);
+    });
+
+    console.log('Response is: ', response)
+  };
 
   const logoDimensions = {
     xs: "50px",
@@ -299,6 +342,7 @@ const RegisterPage = () => {
                 )}
 {index === 3 && (
                   <Button
+                    onClick={handleButtonClick}
                     variant="contained"
                     color={theme.palette.mode === 'light' ? 'secondary' : 'primary'}
                     sx={{ marginY: "30px", color: "white" }}

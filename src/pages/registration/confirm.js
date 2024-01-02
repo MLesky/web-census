@@ -59,7 +59,7 @@ const ConfirmInfo = () => {
         let message = isData ? response.data.message : 'An Error Occured'
         let status = isData ? response.data.status : -1;
 
-        console.log("res is: ", isData, response, message, status);
+        // console.log("res is: ", isData, response, message, status);
         setResponseMessage(message);
         setSeverity(status == 1 ? "success" : "error");
         setShowAlert(true);

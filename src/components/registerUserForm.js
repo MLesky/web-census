@@ -50,7 +50,7 @@ const RegisterUserForm = ({open, handleClose}) => {
     overflow: 'auto',
   };
 
-  console.log('close', handleClose, typeof(handleClose))
+  // console.log('close', handleClose, typeof(handleClose))
 
   return (
     <Modal

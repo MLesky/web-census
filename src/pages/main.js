@@ -3,16 +3,13 @@ import {
   MaleOutlined,
   ChildCare,
   PeopleOutlineSharp,
-  WorkOutline,
   Elderly,
   Hail,
 } from "@mui/icons-material";
 import {
-  Divider,
   Grid,
   Paper,
   Skeleton,
-  Slider,
   Stack,
   styled,
   Table,
@@ -24,44 +21,108 @@ import {
   TableContainer,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import {
-  blue,
-  green,
-  grey,
-  orange,
-  pink,
-  purple,
-  yellow,
-} from "@mui/material/colors";
-import {
-  BarChart,
-  LineChart,
-  PieArcLabel,
-  PieChart,
-  useDrawingArea,
-} from "@mui/x-charts";
+import { blue, green, grey, pink, purple, yellow } from "@mui/material/colors";
+import { BarChart, LineChart, PieChart, useDrawingArea } from "@mui/x-charts";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const MainDashboard = () => {
-  const [loading, setLoading] = useState(true);
+  const [citizens, setCitizens] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, [loading]);
+    axios.get("http://localhost/web-census/api/index.php").then((response) => {
+      setCitizens(response);
+    });
+  }, [citizens]);
 
-  const headCount = "20,399,493";
+  const adultHeadCount = () => citizens.data.length;
+  const totalHeadCount = () => adultHeadCount() + totalChildrenCount();
+  const ageGroupGraph = () => {
+    let listOfVals = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (var i = 0; i < adultHeadCount(); i++) {
+      let thisYear = new Date().getFullYear();
+      let birthYear = new Date(citizens.data[i].date_of_birth).getFullYear();
+      let age = thisYear - birthYear;
+      if (age <= 22) {
+        listOfVals[0]++;
+      } else if (age >= 23 && age <= 27) {
+        listOfVals[1]++;
+      } else if (age >= 28 && age <= 33) {
+        listOfVals[2]++;
+      } else if (age >= 34 && age <= 39) {
+        listOfVals[3]++;
+      } else if (age >= 40 && age <= 45) {
+        listOfVals[4]++;
+      } else if (age >= 46 && age <= 51) {
+        listOfVals[5]++;
+      } else if (age >= 52 && age <= 57) {
+        listOfVals[6]++;
+      } else if (age >= 58 && age <= 63) {
+        listOfVals[7]++;
+      } else if (age >= 64 && age <= 69) {
+        listOfVals[8]++;
+      } else if (age >= 70 && age <= 75) {
+        listOfVals[9]++;
+      } else if (age >= 76 && age <= 80) {
+        listOfVals[10]++;
+      } else {
+        listOfVals[11]++;
+      }
+    }
+
+    listOfVals[0] += underAgedChildrenCount();
+    return listOfVals;
+  };
+
+  const populationWithChildren = () => {
+    let total = 0;
+    for (var i = 0; i < adultHeadCount(); i++){
+      let usersKids = parseInt(citizens.data[i].boys_abv_21) + parseInt(citizens.data[i].boys_blw_22) + parseInt(citizens.data[i].girls_blw_22) + parseInt(citizens.data[i].girls_abv_21);
+      if(usersKids > 0){
+        total++;
+      }
+    }
+    return total;
+  }
+
+  const totalChildrenCount = () => underAgedChildrenCount() + adultAgedChildrenCount()
+
+  const underAgedChildrenCount = () => {
+    let total = 0;
+    for(var i = 0; i < adultHeadCount(); i++){
+      total += parseInt(citizens.data[i].boys_blw_22) + parseInt(citizens.data[i].girls_blw_22);
+    }
+    return total;
+  }
+
+  const adultAgedChildrenCount = () => {
+    let total = 0;
+    for(var i = 0; i < adultHeadCount(); i++){
+      total += parseInt(citizens.data[i].boys_abv_21) + parseInt(citizens.data[i].girls_abv_21);
+    }
+    return total;
+  }
+
+  const maleChildrenCount = () => {
+    let total = 0;
+    for(var i = 0; i < adultHeadCount(); i++){
+      total += parseInt(citizens.data[i].boys_blw_22) + parseInt(citizens.data[i].boys_abv_21);
+    }
+    return total;
+  }
+
+  const femaleChildrenCount = () => {
+    let total = 0;
+    for(var i = 0; i < adultHeadCount(); i++){
+      total += parseInt(citizens.data[i].girls_abv_21) + parseInt(citizens.data[i].girls_blw_22);
+    }
+    return total;
+  }
   const noRegions = 10;
   const noDivisions = 58;
   const noSubDivisions = 237;
-  const avgAge = 29;
   const increaseRate = "5.4%";
-  const genderPieChartData = [
-    { id: 0, value: 10456980, label: "Female", color: "purple" },
-    { id: 1, value: 9007729, label: "Male", color: "blue" },
-    { id: 2, value: 512980, label: "Other", color: "green" },
-  ];
+
   const regions = [
     "Adamawa",
     "Centre",
@@ -100,7 +161,7 @@ const MainDashboard = () => {
   };
 
   const paperStyles = {
-    padding: loading ? 0 : 1,
+    padding: citizens === null ? 0 : 1,
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -124,6 +185,16 @@ const MainDashboard = () => {
       </StyledText>
     );
   }
+
+  const calcAveAge = () => {
+    let totalAge = 0;
+    for (var i = 0; i < adultHeadCount(); i++) {
+      let age =
+        new Date().getFullYear() - new Date(citizens.data[i].date_of_birth).getFullYear();
+      totalAge += age;
+    }
+    return Math.floor(totalAge / adultHeadCount());
+  };
 
   const tableOfRegions = [
     {
@@ -222,15 +293,15 @@ const MainDashboard = () => {
     <Stack sx={{ padding: 1 }} gap={1} alignItems="center">
       <Paper
         sx={{
-          padding: loading ? 0 : 1,
+          padding: citizens === null ? 0 : 1,
           width: "100%",
           display: "flex",
           justifyContent: "center",
         }}
-        elevation={loading ? 0 : 5}
+        elevation={citizens === null ? 0 : 5}
       >
-        {loading && <Skeleton variant="rounded" width="100%" height={60} />}
-        {!loading && (
+        {citizens === null && <Skeleton variant="rounded" width="100%" height={60} />}
+        {citizens !== null && (
           <Stack
             direction="row"
             flexWrap="wrap"
@@ -245,7 +316,7 @@ const MainDashboard = () => {
                 variant="h6"
                 sx={{ fontWeight: "700" }}
               >
-                {headCount}
+                {totalHeadCount()}
               </Typography>
             </Stack>
             <Stack alignItems="center">
@@ -259,7 +330,7 @@ const MainDashboard = () => {
               </Typography>
             </Stack>
             <Stack alignItems="center">
-              <Typography>Head Count</Typography>
+              <Typography>Divisions</Typography>
               <Typography
                 color="primary"
                 variant="h6"
@@ -285,7 +356,7 @@ const MainDashboard = () => {
                 variant="h6"
                 sx={{ fontWeight: "700" }}
               >
-                {avgAge}
+                {calcAveAge()}
               </Typography>
             </Stack>
             <Stack alignItems="center">
@@ -308,18 +379,43 @@ const MainDashboard = () => {
         justifyContent="space-between"
       >
         <Grid item xs={12} md={4} lg={3}>
-          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
-            {loading && (
+          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
+            {citizens === null && (
               <Skeleton variant="rounded" width="100%" height="100%" />
             )}
-            {!loading && <Typography>Gender Ratio</Typography>}
-            {!loading && (
+            {citizens !== null && <Typography>Gender Ratio</Typography>}
+            {citizens !== null && (
               <PieChart
                 title="Gender Ratio"
                 series={[
                   {
                     //   arcLabel: (item) => `(${item.value})`,
-                    data: genderPieChartData,
+                    data: [
+                      {
+                        id: 0,
+                        value: citizens.data.filter(
+                          (value) => value.gender == "Female"
+                        ).length,
+                        label: "Female",
+                        color: "purple",
+                      },
+                      {
+                        id: 1,
+                        value: citizens.data.filter(
+                          (value) => value.gender == "Male"
+                        ).length,
+                        label: "Male",
+                        color: "blue",
+                      },
+                      {
+                        id: 2,
+                        value: citizens.data.filter(
+                          (value) => value.gender == "Other"
+                        ).length,
+                        label: "Other",
+                        color: "green",
+                      },
+                    ],
                   },
                 ]}
                 width={300}
@@ -330,12 +426,12 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={8} lg={5}>
-          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
-            {loading && (
+          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
+            {citizens === null && (
               <Skeleton variant="rounded" width="100%" height={300} />
             )}
-            {!loading && <Typography>Head Counts by regions</Typography>}
-            {!loading && (
+            {citizens !== null && <Typography>Head Counts by regions</Typography>}
+            {citizens !== null && (
               <BarChart
                 //   xAxis={regionBarChartData.xAxis}
                 //   series={regionBarChartData.series}
@@ -352,11 +448,11 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={6} lg={4}>
-          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
-            {loading && (
+          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
+            {citizens === null && (
               <Skeleton variant="rounded" width="100%" height="100%" />
             )}
-            {!loading && (
+            {citizens !== null && (
               <TableContainer>
                 <Table
                   size="small"
@@ -400,10 +496,8 @@ const MainDashboard = () => {
                         (Math.random() * 0.6 + 0.25) * region.headCounts
                       );
                       let elderly = Math.floor(Math.random() * 100000 + 2000);
-                      console.log(
-                        "color: ",
                         getDivisionResult(region.headCounts, 700000, 1500000)
-                      );
+
                       return (
                         <TableRow>
                           <TableCell>{region.region}</TableCell>
@@ -490,12 +584,12 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={6} lg={4}>
-          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
-            {loading && (
+          <Paper elevation={citizens !== null ? 0 : 5} sx={paperStyles}>
+            {citizens === null && (
               <Skeleton variant="rounded" width="100%" height="100%" />
             )}
-            {!loading && <Typography>Yearly Increase</Typography>}
-            {!loading && (
+            {citizens !== null && <Typography>Yearly Increase</Typography>}
+            {citizens !== null && (
               <LineChart
                 xAxis={[
                   { data: ["2018", "2019", "2020", "2021", "2022", "2023"] },
@@ -516,12 +610,12 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={7} lg={4}>
-          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
-            {loading && (
+          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
+            {citizens === null && (
               <Skeleton variant="rounded" width="100%" height="100%" />
             )}
-            {!loading && <Typography>Head Counts by Age Group</Typography>}
-            {!loading && (
+            {citizens !== null && <Typography>Head Counts by Age Group</Typography>}
+            {citizens !== null && (
               <BarChart
                 xAxis={[
                   {
@@ -529,7 +623,7 @@ const MainDashboard = () => {
                     categoryGapRatio: 0.2,
                     data: [
                       "-22",
-                      "22-27",
+                      "23-27",
                       "28-33",
                       "34-39",
                       "40-45",
@@ -545,10 +639,7 @@ const MainDashboard = () => {
                 ]}
                 series={[
                   {
-                    data: [
-                      1493, 1095, 1940, 930, 2093, 2990, 948, 1223, 674, 899,
-                      1000, 647,
-                    ],
+                    data: ageGroupGraph(),
                   },
                 ]}
                 width={450}
@@ -560,8 +651,8 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={5} lg={4} sx={{ maxHeight: "400px" }}>
-          <Paper elevation={loading ? 0 : 5} sx={paperStyles}>
-            {!loading && <Typography>Children</Typography>}
+          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
+            {citizens !== null && <Typography>Children</Typography>}
             <Grid
               container
               direction="row"
@@ -570,10 +661,10 @@ const MainDashboard = () => {
               sx={{ overflowY: "auto" }}
             >
               <Grid item xs={12}>
-                {loading && (
+                {citizens === null && (
                   <Skeleton variant="rectangular" width="100%" height={200} />
                 )}
-                {!loading && (
+                {citizens !== null && (
                   <Table size="small">
                     <TableRow>
                       <TableCell>Count</TableCell>
@@ -583,7 +674,7 @@ const MainDashboard = () => {
                           color="primary"
                           fontWeight="bold"
                         >
-                          5,236,278 (32%)
+                          {`${totalChildrenCount()} (${Math.floor((totalChildrenCount()/totalHeadCount()) * 100)}%)`}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -607,7 +698,7 @@ const MainDashboard = () => {
                           color="primary"
                           fontWeight="bold"
                         >
-                          2.3 per person
+                          {underAgedChildrenCount()/adultHeadCount()} per person
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -615,19 +706,19 @@ const MainDashboard = () => {
                 )}
               </Grid>
               <Grid item xs={12}>
-                {loading && (
+                {citizens === null && (
                   <Skeleton variant="circular" width={100} height={100} />
                 )}
-                {!loading && (
+                {citizens !== null && (
                   <PieChart
                     series={[
                       {
                         //   arcLabel: (item) => `(${item.value})`,
                         data: [
-                          { id: 1, value: 12007729, color: "grey" },
+                          { id: 1, value: adultHeadCount() - populationWithChildren(), color: "grey" },
                           {
                             id: 0,
-                            value: 8456980,
+                            value: populationWithChildren(),
                             label: "Population with\nchildren",
                             color: "orange",
                           },
@@ -638,15 +729,15 @@ const MainDashboard = () => {
                     width={320}
                     height={100}
                   >
-                    <PieCenterLabel>42%</PieCenterLabel>
+                    <PieCenterLabel>{Math.floor((populationWithChildren()/adultHeadCount()) * 100)}%</PieCenterLabel>
                   </PieChart>
                 )}
               </Grid>
               <Grid item xs={12}>
-                {loading && (
+                {citizens === null && (
                   <Skeleton variant="circular" width={100} height={100} />
                 )}
-                {!loading && (
+                {citizens !== null && (
                   <PieChart
                     series={[
                       {
@@ -654,13 +745,13 @@ const MainDashboard = () => {
                         data: [
                           {
                             id: 1,
-                            value: 5007729,
+                            value: adultAgedChildrenCount(),
                             label: "Above 21",
                             color: "orange",
                           },
                           {
                             id: 0,
-                            value: 7007729,
+                            value: underAgedChildrenCount(),
                             label: "Below 22",
                             color: "purple",
                           },
@@ -674,10 +765,10 @@ const MainDashboard = () => {
                 )}
               </Grid>
               <Grid item xs={12}>
-                {loading && (
+                {citizens === null && (
                   <Skeleton variant="circular" width={100} height={100} />
                 )}
-                {!loading && (
+                {citizens !== null && (
                   <PieChart
                     series={[
                       {
@@ -685,13 +776,13 @@ const MainDashboard = () => {
                         data: [
                           {
                             id: 1,
-                            value: 6007729,
+                            value: maleChildrenCount(),
                             label: "Males",
                             color: "violet",
                           },
                           {
                             id: 0,
-                            value: 6456980,
+                            value: femaleChildrenCount(),
                             label: "Females",
                             color: "indigo",
                           },
@@ -710,7 +801,8 @@ const MainDashboard = () => {
       </Grid>
     </Stack>
   );
-};
+}
+
 
 export default MainDashboard;
 

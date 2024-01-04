@@ -23,13 +23,13 @@ function UserSession({ children }) {
         localStorage.setItem("password", pass);
         setPassword(name);
         setUsername(pass);
-        console.log('SET to', name, pass)
+        // console.log('SET to', name, pass)
       },
     }),
     [username, password]
   );
 
-  console.log("User Info", admin);
+  // console.log("User Info", admin);
 
   return <AuthContext.Provider value={admin}>{children}</AuthContext.Provider>;
 }

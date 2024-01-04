@@ -45,8 +45,8 @@ const DateOfBirth = ({showText = true }) => {
 
     if (ok) {
       setIndex(index + 1);
-      console.log("user now", index, user);
-    console.log("errors now", index, errors);
+    //   console.log("user now", index, user);
+    // console.log("errors now", index, errors);
     }
 
   }

@@ -30,7 +30,7 @@ const MainDashboard = () => {
   const [citizens, setCitizens] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost/web-census/api/index.php").then((response) => {
+    axios.get("http://localhost/web-census/api/users").then((response) => {
       setCitizens(response);
     });
   }, [citizens]);

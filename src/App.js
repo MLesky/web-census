@@ -6,6 +6,7 @@ import { useTheme } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import { UserSession } from "./authenticate/context";
 import { UserContextProvider } from "./user/user_context";
+import { DataBaseTables } from "./respository/database_context";
 
 function App() {
   const theme = useTheme();
@@ -14,11 +15,13 @@ function App() {
   return (
     <Box className="App">
       <ToggleColorMode>
+        <DataBaseTables>
         <UserSession>
           <UserContextProvider>
             <RouterProvider router={routes} />
           </UserContextProvider>
         </UserSession>
+        </DataBaseTables>
       </ToggleColorMode>
     </Box>
   );

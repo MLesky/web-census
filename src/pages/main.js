@@ -23,25 +23,24 @@ import {
 import { alpha } from "@mui/material/styles";
 import { blue, green, grey, pink, purple, yellow } from "@mui/material/colors";
 import { BarChart, LineChart, PieChart, useDrawingArea } from "@mui/x-charts";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { DataBaseContext } from "../respository/database_context";
 
 const MainDashboard = () => {
-  const [citizens, setCitizens] = useState(null);
+  const data = useContext(DataBaseContext)
+  console.log('data aih', data)
+  const citizens = data.data.users;
+  const regions = data.data.regions;
 
-  useEffect(() => {
-    axios.get("http://localhost/web-census/api/users").then((response) => {
-      setCitizens(response);
-    });
-  }, [citizens]);
-
-  const adultHeadCount = () => citizens.data.length;
+  // Data about people
+  const adultHeadCount = () => citizens.length;
   const totalHeadCount = () => adultHeadCount() + totalChildrenCount();
   const ageGroupGraph = () => {
     let listOfVals = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     for (var i = 0; i < adultHeadCount(); i++) {
       let thisYear = new Date().getFullYear();
-      let birthYear = new Date(citizens.data[i].date_of_birth).getFullYear();
+      let birthYear = new Date(citizens[i].date_of_birth).getFullYear();
       let age = thisYear - birthYear;
       if (age <= 22) {
         listOfVals[0]++;
@@ -73,68 +72,51 @@ const MainDashboard = () => {
     listOfVals[0] += underAgedChildrenCount();
     return listOfVals;
   };
-
   const populationWithChildren = () => {
     let total = 0;
     for (var i = 0; i < adultHeadCount(); i++){
-      let usersKids = parseInt(citizens.data[i].boys_abv_21) + parseInt(citizens.data[i].boys_blw_22) + parseInt(citizens.data[i].girls_blw_22) + parseInt(citizens.data[i].girls_abv_21);
+      let usersKids = parseInt(citizens[i].boys_abv_21) + parseInt(citizens[i].boys_blw_22) + parseInt(citizens[i].girls_blw_22) + parseInt(citizens[i].girls_abv_21);
       if(usersKids > 0){
         total++;
       }
     }
     return total;
   }
-
   const totalChildrenCount = () => underAgedChildrenCount() + adultAgedChildrenCount()
-
   const underAgedChildrenCount = () => {
     let total = 0;
     for(var i = 0; i < adultHeadCount(); i++){
-      total += parseInt(citizens.data[i].boys_blw_22) + parseInt(citizens.data[i].girls_blw_22);
+      total += parseInt(citizens[i].boys_blw_22) + parseInt(citizens[i].girls_blw_22);
     }
     return total;
   }
-
   const adultAgedChildrenCount = () => {
     let total = 0;
     for(var i = 0; i < adultHeadCount(); i++){
-      total += parseInt(citizens.data[i].boys_abv_21) + parseInt(citizens.data[i].girls_abv_21);
+      total += parseInt(citizens[i].boys_abv_21) + parseInt(citizens[i].girls_abv_21);
     }
     return total;
   }
-
   const maleChildrenCount = () => {
     let total = 0;
     for(var i = 0; i < adultHeadCount(); i++){
-      total += parseInt(citizens.data[i].boys_blw_22) + parseInt(citizens.data[i].boys_abv_21);
+      total += parseInt(citizens[i].boys_blw_22) + parseInt(citizens[i].boys_abv_21);
+    }
+    return total;
+  }
+  const femaleChildrenCount = () => {
+    let total = 0;
+    for(var i = 0; i < adultHeadCount(); i++){
+      total += parseInt(citizens[i].girls_abv_21) + parseInt(citizens[i].girls_blw_22);
     }
     return total;
   }
 
-  const femaleChildrenCount = () => {
-    let total = 0;
-    for(var i = 0; i < adultHeadCount(); i++){
-      total += parseInt(citizens.data[i].girls_abv_21) + parseInt(citizens.data[i].girls_blw_22);
-    }
-    return total;
-  }
+
   const noRegions = 10;
   const noDivisions = 58;
   const noSubDivisions = 237;
   const increaseRate = "5.4%";
-
-  const regions = [
-    "Adamawa",
-    "Centre",
-    "East",
-    "Far North",
-    "Littoral",
-    "North",
-    "North West",
-    "South",
-    "South West",
-    "West",
-  ];
 
   const regionData = [
     { region: "Adamawa", headCounts: 990837 },
@@ -190,7 +172,7 @@ const MainDashboard = () => {
     let totalAge = 0;
     for (var i = 0; i < adultHeadCount(); i++) {
       let age =
-        new Date().getFullYear() - new Date(citizens.data[i].date_of_birth).getFullYear();
+        new Date().getFullYear() - new Date(citizens[i].date_of_birth).getFullYear();
       totalAge += age;
     }
     return Math.floor(totalAge / adultHeadCount());
@@ -393,7 +375,7 @@ const MainDashboard = () => {
                     data: [
                       {
                         id: 0,
-                        value: citizens.data.filter(
+                        value: citizens.filter(
                           (value) => value.gender == "Female"
                         ).length,
                         label: "Female",
@@ -401,7 +383,7 @@ const MainDashboard = () => {
                       },
                       {
                         id: 1,
-                        value: citizens.data.filter(
+                        value: citizens.filter(
                           (value) => value.gender == "Male"
                         ).length,
                         label: "Male",
@@ -409,7 +391,7 @@ const MainDashboard = () => {
                       },
                       {
                         id: 2,
-                        value: citizens.data.filter(
+                        value: citizens.filter(
                           (value) => value.gender == "Other"
                         ).length,
                         label: "Other",

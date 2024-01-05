@@ -28,19 +28,18 @@ import axios from "axios";
 import { DataBaseContext } from "../respository/database_context";
 
 const MainDashboard = () => {
-  const data = useContext(DataBaseContext)
-  console.log('data aih', data)
-  const citizens = data.data.users;
-  const regions = data.data.regions;
+  const database = useContext(DataBaseContext);
+  let isOk = !database.fetching && database.error === null;
+  console.log("isOk", isOk, database);
 
   // Data about people
-  const adultHeadCount = () => citizens.length;
-  const totalHeadCount = () => adultHeadCount() + totalChildrenCount();
-  const ageGroupGraph = () => {
+  const citizens = database.data.users;
+  const totalHeadCount = (data) => data.length + underAgedChildrenCount(data);
+  const ageGroupGraph = (data) => {
     let listOfVals = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (var i = 0; i < adultHeadCount(); i++) {
+    for (var i = 0; i < data.length; i++) {
       let thisYear = new Date().getFullYear();
-      let birthYear = new Date(citizens[i].date_of_birth).getFullYear();
+      let birthYear = new Date(data[i].date_of_birth).getFullYear();
       let age = thisYear - birthYear;
       if (age <= 22) {
         listOfVals[0]++;
@@ -69,67 +68,110 @@ const MainDashboard = () => {
       }
     }
 
-    listOfVals[0] += underAgedChildrenCount();
+    listOfVals[0] += underAgedChildrenCount(data);
     return listOfVals;
   };
-  const populationWithChildren = () => {
+  const calcAveAge = (data) => {
+    let totalAge = 0;
+    for (var i = 0; i < data.length; i++) {
+      let age =
+        new Date().getFullYear() -
+        new Date(data[i].date_of_birth).getFullYear();
+      totalAge += age;
+    }
+    return Math.floor(totalAge / data.length);
+  };
+  const populationWithChildren = (data) => {
     let total = 0;
-    for (var i = 0; i < adultHeadCount(); i++){
-      let usersKids = parseInt(citizens[i].boys_abv_21) + parseInt(citizens[i].boys_blw_22) + parseInt(citizens[i].girls_blw_22) + parseInt(citizens[i].girls_abv_21);
-      if(usersKids > 0){
+    for (var i = 0; i < data.length; i++) {
+      let usersKids =
+        parseInt(data[i].boys_abv_21) +
+        parseInt(data[i].boys_blw_22) +
+        parseInt(data[i].girls_blw_22) +
+        parseInt(data[i].girls_abv_21);
+      if (usersKids > 0) {
         total++;
       }
     }
     return total;
-  }
-  const totalChildrenCount = () => underAgedChildrenCount() + adultAgedChildrenCount()
-  const underAgedChildrenCount = () => {
+  };
+  const totalChildrenCount = (data) =>
+    underAgedChildrenCount(data) + adultAgedChildrenCount(data);
+  const underAgedChildrenCount = (data) => {
     let total = 0;
-    for(var i = 0; i < adultHeadCount(); i++){
-      total += parseInt(citizens[i].boys_blw_22) + parseInt(citizens[i].girls_blw_22);
+    for (var i = 0; i < data.length; i++) {
+      total += parseInt(data[i].boys_blw_22) + parseInt(data[i].girls_blw_22);
     }
     return total;
-  }
-  const adultAgedChildrenCount = () => {
+  };
+  const adultAgedChildrenCount = (data) => {
     let total = 0;
-    for(var i = 0; i < adultHeadCount(); i++){
-      total += parseInt(citizens[i].boys_abv_21) + parseInt(citizens[i].girls_abv_21);
+    for (var i = 0; i < data.length; i++) {
+      total += parseInt(data[i].boys_abv_21) + parseInt(data[i].girls_abv_21);
     }
     return total;
-  }
-  const maleChildrenCount = () => {
+  };
+  const maleChildrenCount = (data) => {
     let total = 0;
-    for(var i = 0; i < adultHeadCount(); i++){
-      total += parseInt(citizens[i].boys_blw_22) + parseInt(citizens[i].boys_abv_21);
+    for (var i = 0; i < data.length; i++) {
+      total += parseInt(data[i].boys_blw_22) + parseInt(data[i].boys_abv_21);
     }
     return total;
-  }
-  const femaleChildrenCount = () => {
+  };
+  const femaleChildrenCount = (data) => {
     let total = 0;
-    for(var i = 0; i < adultHeadCount(); i++){
-      total += parseInt(citizens[i].girls_abv_21) + parseInt(citizens[i].girls_blw_22);
+    for (var i = 0; i < data.length; i++) {
+      total += parseInt(data[i].girls_abv_21) + parseInt(data[i].girls_blw_22);
     }
     return total;
+  };
+  const elderlyCount = (data) => {
+    let elderlies = 0;
+    for (var i = 0; i < data.length; i++) {
+      let age =
+        new Date().getFullYear() -
+        new Date(data[i].date_of_birth).getFullYear();
+      if(age >= 60){
+        elderlies++;
+      }
+    }
+    return elderlies;
   }
 
+  // Data about the regions
+  const regions = database.data.regions;
+  const noRegions = () => regions.length;
+  const regionData = () => {
+    let data = [];
+    regions.map((region) => {
+      data.push({
+        region: region.name,
+        headCounts: database.filters.getUsersFromRegion(region.id).length,
+      });
+    });
+    return data;
+  };
+  const tableOfRegions = (data) => {
+    let values = [];
 
-  const noRegions = 10;
+    regions.map((region) => {
+      values.push({
+        region: region.name,
+        headCounts: database.filters.getUsersFromRegion(region.id).length,
+        males: database.filters.getUsersFromRegion(region.id).filter((value) => value.gender === "Male").length,
+        females: database.filters.getUsersFromRegion(region.id).filter((value) => value.gender === "Female").length,
+        children: underAgedChildrenCount(database.filters.getUsersFromRegion(region.id)),
+        elderly: elderlyCount(database.filters.getUsersFromRegion(region.id)),
+        workingClass: database.filters.getUsersFromRegion(region.id).length - elderlyCount(database.filters.getUsersFromRegion(region.id)),
+      });
+    });
+    return values;
+  };
+
   const noDivisions = 58;
   const noSubDivisions = 237;
   const increaseRate = "5.4%";
 
-  const regionData = [
-    { region: "Adamawa", headCounts: 990837 },
-    { region: "Centre", headCounts: 1390837 },
-    { region: "East", headCounts: 670837 },
-    { region: "Far North", headCounts: 790837 },
-    { region: "Littoral", headCounts: 1590837 },
-    { region: "North", headCounts: 700837 },
-    { region: "North West", headCounts: 1190837 },
-    { region: "South", headCounts: 800837 },
-    { region: "South West", headCounts: 1090837 },
-    { region: "East", headCounts: 590837 },
-  ];
   const ageBarChartData = {
     xAxis: [{ scaleType: "band", data: regions }],
     series: [
@@ -143,7 +185,7 @@ const MainDashboard = () => {
   };
 
   const paperStyles = {
-    padding: citizens === null ? 0 : 1,
+    padding: !isOk ? 0 : 1,
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -168,122 +210,20 @@ const MainDashboard = () => {
     );
   }
 
-  const calcAveAge = () => {
-    let totalAge = 0;
-    for (var i = 0; i < adultHeadCount(); i++) {
-      let age =
-        new Date().getFullYear() - new Date(citizens[i].date_of_birth).getFullYear();
-      totalAge += age;
-    }
-    return Math.floor(totalAge / adultHeadCount());
-  };
-
-  const tableOfRegions = [
-    {
-      region: "Adamawa",
-      headCounts: 990837,
-      abbr: "AD",
-      males: 408089,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-    {
-      region: "Centre",
-      headCounts: 1390837,
-      abbr: "CN",
-      males: 400000,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-    {
-      region: "East",
-      headCounts: 670837,
-      abbr: "ES",
-      males: 400000,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-    {
-      region: "Far North",
-      headCounts: 790837,
-      abbr: "FN",
-      males: 400000,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-    {
-      region: "Littoral",
-      headCounts: 1590837,
-      abbr: "LT",
-      males: 400000,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-    {
-      region: "North",
-      headCounts: 700837,
-      abbr: "NT",
-      males: 400000,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-    {
-      region: "North West",
-      headCounts: 1190837,
-      abbr: "NW",
-      males: 400000,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-    {
-      region: "South",
-      headCounts: 800837,
-      abbr: "ST",
-      males: 400000,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-    {
-      region: "South West",
-      headCounts: 1090837,
-      abbr: "SW",
-      males: 400000,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-    {
-      region: "West",
-      headCounts: 590837,
-      abbr: "WT",
-      males: 400000,
-      children: 384834,
-      elderly: 10920,
-      workingClass: 129938,
-    },
-  ];
 
   return (
     <Stack sx={{ padding: 1 }} gap={1} alignItems="center">
       <Paper
         sx={{
-          padding: citizens === null ? 0 : 1,
+          padding: !isOk ? 0 : 1,
           width: "100%",
           display: "flex",
           justifyContent: "center",
         }}
-        elevation={citizens === null ? 0 : 5}
+        elevation={!isOk ? 0 : 5}
       >
-        {citizens === null && <Skeleton variant="rounded" width="100%" height={60} />}
-        {citizens !== null && (
+        {!isOk && <Skeleton variant="rounded" width="100%" height={60} />}
+        {isOk && (
           <Stack
             direction="row"
             flexWrap="wrap"
@@ -298,7 +238,17 @@ const MainDashboard = () => {
                 variant="h6"
                 sx={{ fontWeight: "700" }}
               >
-                {totalHeadCount()}
+                {totalHeadCount(citizens)}
+              </Typography>
+            </Stack>
+            <Stack alignItems="center">
+              <Typography>Adults</Typography>
+              <Typography
+                color="primary"
+                variant="h6"
+                sx={{ fontWeight: "700" }}
+              >
+                {citizens.length}
               </Typography>
             </Stack>
             <Stack alignItems="center">
@@ -308,7 +258,7 @@ const MainDashboard = () => {
                 variant="h6"
                 sx={{ fontWeight: "700" }}
               >
-                {noRegions}
+                {noRegions()}
               </Typography>
             </Stack>
             <Stack alignItems="center">
@@ -338,7 +288,7 @@ const MainDashboard = () => {
                 variant="h6"
                 sx={{ fontWeight: "700" }}
               >
-                {calcAveAge()}
+                {calcAveAge(citizens)}
               </Typography>
             </Stack>
             <Stack alignItems="center">
@@ -361,12 +311,10 @@ const MainDashboard = () => {
         justifyContent="space-between"
       >
         <Grid item xs={12} md={4} lg={3}>
-          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
-            {citizens === null && (
-              <Skeleton variant="rounded" width="100%" height="100%" />
-            )}
-            {citizens !== null && <Typography>Gender Ratio</Typography>}
-            {citizens !== null && (
+          <Paper elevation={!isOk ? 0 : 5} sx={paperStyles}>
+            {!isOk && <Skeleton variant="rounded" width="100%" height="100%" />}
+            {isOk && <Typography>Gender Ratio</Typography>}
+            {isOk && (
               <PieChart
                 title="Gender Ratio"
                 series={[
@@ -408,16 +356,14 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={8} lg={5}>
-          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
-            {citizens === null && (
-              <Skeleton variant="rounded" width="100%" height={300} />
-            )}
-            {citizens !== null && <Typography>Head Counts by regions</Typography>}
-            {citizens !== null && (
+          <Paper elevation={!isOk ? 0 : 5} sx={paperStyles}>
+            {!isOk && <Skeleton variant="rounded" width="100%" height={300} />}
+            {isOk && <Typography>Head Counts by regions</Typography>}
+            {isOk && (
               <BarChart
                 //   xAxis={regionBarChartData.xAxis}
                 //   series={regionBarChartData.series}
-                dataset={regionData}
+                dataset={regionData()}
                 yAxis={[{ scaleType: "band", dataKey: "region" }]}
                 series={[{ dataKey: "headCounts", label: "Head counts" }]}
                 layout="horizontal"
@@ -430,11 +376,9 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={6} lg={4}>
-          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
-            {citizens === null && (
-              <Skeleton variant="rounded" width="100%" height="100%" />
-            )}
-            {citizens !== null && (
+          <Paper elevation={!isOk ? 0 : 5} sx={paperStyles}>
+            {!isOk && <Skeleton variant="rounded" width="100%" height="100%" />}
+            {isOk && (
               <TableContainer>
                 <Table
                   size="small"
@@ -466,94 +410,66 @@ const MainDashboard = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {tableOfRegions.map((region) => {
-                      let males = Math.floor(
-                        (Math.random() * 0.7 + 0.2) * region.headCounts
-                      );
-                      let females = region.headCounts - males;
-                      let children = Math.floor(
-                        (Math.random() * 0.4 + 0.15) * region.headCounts
-                      );
-                      let adults = Math.floor(
-                        (Math.random() * 0.6 + 0.25) * region.headCounts
-                      );
-                      let elderly = Math.floor(Math.random() * 100000 + 2000);
-                        getDivisionResult(region.headCounts, 700000, 1500000)
-
+                    {tableOfRegions(citizens).map((region) => {
+                      console.log('regions =>', tableOfRegions(citizens))
                       return (
                         <TableRow>
                           <TableCell>{region.region}</TableCell>
                           <TableCell
                             sx={{
-                              backgroundColor: alpha(
-                                green[
+                              backgroundColor: green[
                                   getDivisionResult(
                                     region.headCounts,
-                                    700000,
-                                    1500000
+                                    700,
+                                    3000
                                   )
                                 ],
-                                0.5
-                              ),
                             }}
                           >
                             {region.headCounts}
                           </TableCell>
                           <TableCell
                             sx={{
-                              backgroundColor: alpha(
-                                blue[getDivisionResult(males, 300000, 750000)],
-                                0.5
-                              ),
+                              backgroundColor:
+                                blue[getDivisionResult(region.males, 300, 1500)],
                             }}
                           >
-                            {males}
+                            {region.males}
                           </TableCell>
                           <TableCell
                             sx={{
-                              backgroundColor: alpha(
+                              backgroundColor:
                                 pink[
-                                  getDivisionResult(females, 300000, 750000)
+                                  getDivisionResult(region.females, 300, 1500)
                                 ],
-                                0.5
-                              ),
                             }}
                           >
-                            {females}
+                            {region.females}
                           </TableCell>
                           <TableCell
                             sx={{
-                              backgroundColor: alpha(
+                              backgroundColor:
                                 yellow[
-                                  getDivisionResult(children, 250000, 400000)
+                                  getDivisionResult(region.children, 2500, 4000)
                                 ],
-                                0.5
-                              ),
                             }}
                           >
-                            {children}
+                            {region.children}
                           </TableCell>
                           <TableCell
                             sx={{
-                              backgroundColor: alpha(
-                                purple[
-                                  getDivisionResult(adults, 400000, 700000)
-                                ],
-                                0.5
-                              ),
+                              backgroundColor: purple[getDivisionResult(region.adults, 400, 2000)],
                             }}
                           >
-                            {adults}
+                            {region.adults}
                           </TableCell>
                           <TableCell
                             sx={{
-                              backgroundColor: alpha(
-                                grey[getDivisionResult(elderly, 30000, 60000)],
-                                0.5
-                              ),
+                              backgroundColor:
+                                grey[getDivisionResult(region.elderly, 300, 600)],
                             }}
                           >
-                            {elderly}
+                            {region.elderly}
                           </TableCell>
                         </TableRow>
                       );
@@ -566,12 +482,10 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={6} lg={4}>
-          <Paper elevation={citizens !== null ? 0 : 5} sx={paperStyles}>
-            {citizens === null && (
-              <Skeleton variant="rounded" width="100%" height="100%" />
-            )}
-            {citizens !== null && <Typography>Yearly Increase</Typography>}
-            {citizens !== null && (
+          <Paper elevation={!isOk ? 0 : 5} sx={paperStyles}>
+            {!isOk && <Skeleton variant="rounded" width="100%" height="100%" />}
+            {isOk && <Typography>Yearly Increase</Typography>}
+            {isOk && (
               <LineChart
                 xAxis={[
                   { data: ["2018", "2019", "2020", "2021", "2022", "2023"] },
@@ -592,12 +506,10 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={7} lg={4}>
-          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
-            {citizens === null && (
-              <Skeleton variant="rounded" width="100%" height="100%" />
-            )}
-            {citizens !== null && <Typography>Head Counts by Age Group</Typography>}
-            {citizens !== null && (
+          <Paper elevation={!isOk ? 0 : 5} sx={paperStyles}>
+            {!isOk && <Skeleton variant="rounded" width="100%" height="100%" />}
+            {isOk && <Typography>Head Counts by Age Group</Typography>}
+            {isOk && (
               <BarChart
                 xAxis={[
                   {
@@ -621,7 +533,7 @@ const MainDashboard = () => {
                 ]}
                 series={[
                   {
-                    data: ageGroupGraph(),
+                    data: ageGroupGraph(citizens),
                   },
                 ]}
                 width={450}
@@ -633,8 +545,8 @@ const MainDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={5} lg={4} sx={{ maxHeight: "400px" }}>
-          <Paper elevation={citizens === null ? 0 : 5} sx={paperStyles}>
-            {citizens !== null && <Typography>Children</Typography>}
+          <Paper elevation={!isOk ? 0 : 5} sx={paperStyles}>
+            {isOk && <Typography>Children</Typography>}
             <Grid
               container
               direction="row"
@@ -643,10 +555,10 @@ const MainDashboard = () => {
               sx={{ overflowY: "auto" }}
             >
               <Grid item xs={12}>
-                {citizens === null && (
+                {!isOk && (
                   <Skeleton variant="rectangular" width="100%" height={200} />
                 )}
-                {citizens !== null && (
+                {isOk && (
                   <Table size="small">
                     <TableRow>
                       <TableCell>Count</TableCell>
@@ -656,7 +568,11 @@ const MainDashboard = () => {
                           color="primary"
                           fontWeight="bold"
                         >
-                          {`${totalChildrenCount()} (${Math.floor((totalChildrenCount()/totalHeadCount()) * 100)}%)`}
+                          {`${totalChildrenCount(citizens)} (${Math.floor(
+                            (totalChildrenCount(citizens) /
+                              totalHeadCount(citizens)) *
+                              100
+                          )}%)`}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -680,7 +596,8 @@ const MainDashboard = () => {
                           color="primary"
                           fontWeight="bold"
                         >
-                          {underAgedChildrenCount()/adultHeadCount()} per person
+                          {underAgedChildrenCount(citizens) / citizens.length}{" "}
+                          per person
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -688,19 +605,25 @@ const MainDashboard = () => {
                 )}
               </Grid>
               <Grid item xs={12}>
-                {citizens === null && (
+                {!isOk && (
                   <Skeleton variant="circular" width={100} height={100} />
                 )}
-                {citizens !== null && (
+                {isOk && (
                   <PieChart
                     series={[
                       {
                         //   arcLabel: (item) => `(${item.value})`,
                         data: [
-                          { id: 1, value: adultHeadCount() - populationWithChildren(), color: "grey" },
+                          {
+                            id: 1,
+                            value:
+                              citizens.length -
+                              populationWithChildren(citizens),
+                            color: "grey",
+                          },
                           {
                             id: 0,
-                            value: populationWithChildren(),
+                            value: populationWithChildren(citizens),
                             label: "Population with\nchildren",
                             color: "orange",
                           },
@@ -711,15 +634,21 @@ const MainDashboard = () => {
                     width={320}
                     height={100}
                   >
-                    <PieCenterLabel>{Math.floor((populationWithChildren()/adultHeadCount()) * 100)}%</PieCenterLabel>
+                    <PieCenterLabel>
+                      {Math.floor(
+                        (populationWithChildren(citizens) / citizens.length) *
+                          100
+                      )}
+                      %
+                    </PieCenterLabel>
                   </PieChart>
                 )}
               </Grid>
               <Grid item xs={12}>
-                {citizens === null && (
+                {!isOk && (
                   <Skeleton variant="circular" width={100} height={100} />
                 )}
-                {citizens !== null && (
+                {isOk && (
                   <PieChart
                     series={[
                       {
@@ -727,13 +656,13 @@ const MainDashboard = () => {
                         data: [
                           {
                             id: 1,
-                            value: adultAgedChildrenCount(),
+                            value: adultAgedChildrenCount(citizens),
                             label: "Above 21",
                             color: "orange",
                           },
                           {
                             id: 0,
-                            value: underAgedChildrenCount(),
+                            value: underAgedChildrenCount(citizens),
                             label: "Below 22",
                             color: "purple",
                           },
@@ -747,10 +676,10 @@ const MainDashboard = () => {
                 )}
               </Grid>
               <Grid item xs={12}>
-                {citizens === null && (
+                {!isOk && (
                   <Skeleton variant="circular" width={100} height={100} />
                 )}
-                {citizens !== null && (
+                {isOk && (
                   <PieChart
                     series={[
                       {
@@ -758,13 +687,13 @@ const MainDashboard = () => {
                         data: [
                           {
                             id: 1,
-                            value: maleChildrenCount(),
+                            value: maleChildrenCount(citizens),
                             label: "Males",
                             color: "violet",
                           },
                           {
                             id: 0,
-                            value: femaleChildrenCount(),
+                            value: femaleChildrenCount(citizens),
                             label: "Females",
                             color: "indigo",
                           },
@@ -783,8 +712,7 @@ const MainDashboard = () => {
       </Grid>
     </Stack>
   );
-}
-
+};
 
 export default MainDashboard;
 

@@ -42,8 +42,35 @@ function DataBaseTables({ children }) {
     fetchData();
   }, []);
 
+
+  const regionNames = data.regions.map(region => region.name)
+
+  const filters = {
+    getUsersFromRegion : (regionID = '') => {
+        if (regionID === '') return data.users;
+
+        let divisions = data.divisions.filter(division => division.region === regionID)
+        console.log("Divisions: ", divisions)
+        let subDivisions = []
+        let users = []
+        divisions.map(division => {
+            subDivisions.push(...data.sub_divisions.filter(sub => sub.division === division.id));
+        })
+
+        console.log("Sub Divisions: ", subDivisions)
+    
+        subDivisions.map(subs => {
+            users.push(...data.users.filter(user => user.sub_division === subs.id))
+        })
+
+        console.log("Users: ", users)
+
+        return users;
+      }
+  }
+
   return (
-    <DataBaseContext.Provider value={{ data, fetching, error }}>
+    <DataBaseContext.Provider value={{ data, filters, fetching, error }}>
       {children}
     </DataBaseContext.Provider>
   );

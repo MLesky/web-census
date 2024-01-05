@@ -1,4 +1,4 @@
-import { Container, Stack, Grid, Paper } from "@mui/material";
+import { Container, Grid, Paper } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 const Regions = () => {

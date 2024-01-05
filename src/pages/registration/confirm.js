@@ -52,7 +52,7 @@ const ConfirmInfo = () => {
     console.log("data is: ", data);
     //the api call
     const response = axios
-      .post("http://localhost/web-census/api/index.php", data)
+      .post("http://localhost/web-census/api/users/", data)
       .then(function (response) {
         
         let isData = response.data.message !== undefined;

@@ -1,50 +1,47 @@
 import { Container, Stack, Skeleton, Grid, Paper } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { DataBaseContext } from "../respository/database_context";
 
 const People = () => {
-  const [citizens, setCitizens] = useState(null);
-  const [rows, setRows] = useState([]);
+  const database = useContext(DataBaseContext)
+  let isOk = !database.fetching && database.error === null;
+  const users = database.data.users;
 
-  useEffect(() => {
-    axios.get("http://localhost/web-census/api/index.php").then((response) => {
-      setCitizens(response);
-      console.log('user', response)
-      let data = response.data;
+  const setUsers = () => {
 
       let tempRows = []
 
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < users.length; i++) {
         tempRows.push({
           id: i + 1,
-          card_no: data[i].id,
-          sur_name: data[i].sur_name,
-          first_name: data[i].first_name,
-          second_name: data[i].second_name,
-          gender: data[i].gender,
-          date_of_birth: data[i].date_of_birth,
+          card_no: users[i].id,
+          sur_name: users[i].sur_name,
+          first_name: users[i].first_name,
+          second_name: users[i].second_name,
+          gender: users[i].gender,
+          date_of_birth: users[i].date_of_birth,
           age:
             new Date().getFullYear() -
-            new Date(data[i].date_of_birth).getFullYear(),
-          place_of_birth: data[i].place_of_birth,
-          sub_division: data[i].sub_division,
-          town: data[i].town_village,
-          boys_blw_22: parseInt(data[i].boys_blw_22),
-          girls_blw_22: parseInt(data[i].girls_blw_22),
-          boys_abv_21: parseInt(data[i].boys_abv_21),
-          girls_abv_21: parseInt(data[i].girls_abv_21),
+            new Date(users[i].date_of_birth).getFullYear(),
+          place_of_birth: users[i].place_of_birth,
+          sub_division: users[i].sub_division,
+          town: users[i].town_village,
+          boys_blw_22: parseInt(users[i].boys_blw_22),
+          girls_blw_22: parseInt(users[i].girls_blw_22),
+          boys_abv_21: parseInt(users[i].boys_abv_21),
+          girls_abv_21: parseInt(users[i].girls_abv_21),
           total_children:
-            parseInt(data[i].girls_abv_21) +
-            parseInt(data[i].boys_abv_21) +
-            parseInt(data[i].boys_blw_22) +
-            parseInt(data[i].girls_blw_22),
+            parseInt(users[i].girls_abv_21) +
+            parseInt(users[i].boys_abv_21) +
+            parseInt(users[i].boys_blw_22) +
+            parseInt(users[i].girls_blw_22),
         });
       }
 
-      setRows(tempRows);
-    });
-  }, []);
+      return tempRows;
+  }
 
   let columns = [
     { field: "card_no", headerName: "Card No" },
@@ -73,12 +70,12 @@ const People = () => {
           alignItems="center"
         >
           <Grid item sm={12} lg={10} sx={{minHeight: '80vh'}}>
-            {(citizens === null || rows.length <= 0) && (
+            {!isOk && (
               <Skeleton variant="rounded" width="100%" height="100%" />
             )}
-            {citizens !== null && (
+            {isOk && (
               <DataGrid
-                rows={rows}
+                rows={setUsers()}
                 columns={columns}
                 slots={{ toolbar: GridToolbar }}
                 sx={{width: '100%'}}

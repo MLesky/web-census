@@ -26,10 +26,12 @@ import { BarChart, LineChart, PieChart, useDrawingArea } from "@mui/x-charts";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { DataBaseContext } from "../respository/database_context";
+import AlertPopper from "../components/alert_popper";
 
 const MainDashboard = () => {
   const database = useContext(DataBaseContext);
   let isOk = !database.fetching && database.error === null;
+  const [showError, setShowError] = useState(true)
   console.log("isOk", isOk, database);
 
   // Data about people
@@ -213,6 +215,7 @@ const MainDashboard = () => {
 
   return (
     <Stack sx={{ padding: 1 }} gap={1} alignItems="center">
+      <AlertPopper showAlert={database.error !== null && showError} handleClose={() => setShowError(false)} alertType='error'><Typography>{database.error !== null ? database.error.message : ''}</Typography></AlertPopper>
       <Paper
         sx={{
           padding: !isOk ? 0 : 1,

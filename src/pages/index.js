@@ -8,6 +8,7 @@ import Divisions from "./divisions";
 import SubDivisions from "./subDivisions";
 import People from "./people";
 import ErrorPage from "./error";
+import AboutUs from "./about_us";
 
 export {
   RegisterPage,
@@ -20,4 +21,5 @@ export {
   SubDivisions,
   People,
   ErrorPage,
+  AboutUs,
 };

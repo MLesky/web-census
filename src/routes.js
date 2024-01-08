@@ -2,7 +2,7 @@ import Login from "./authenticate/login";
 import { createBrowserRouter } from "react-router-dom"
 import { Navbar } from "./components";
 import { routeNames } from "./constants";
-import { Divisions, ErrorPage, MainDashboard, People, Regions, RegisterPage, SubDivisions } from "./pages";
+import { AboutUs, Divisions, ErrorPage, MainDashboard, People, Regions, RegisterPage, SubDivisions } from "./pages";
 
 const routes = createBrowserRouter([
     {
@@ -38,11 +38,13 @@ const routes = createBrowserRouter([
             {
                 path: routeNames.people,
                 element: <People />
-            }
-
+            },
+            {
+                path: routeNames.about,
+                element: <AboutUs />
+            },
         ]
     },
-
     {
         path: routeNames.error,
         element: <ErrorPage />

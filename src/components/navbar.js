@@ -177,12 +177,12 @@ const Navbar = () => {
         onClose={handleAboutMenuClose}
         anchorEl={menuAnchor}
       >
-        <MenuItem>
+        <MenuItem sx={{backgroundColor: theme.palette.secondary.main}}>
           <NavLink to={routeNames.about} className="nav-link">
             About Us
           </NavLink>
         </MenuItem>
-        <MenuItem>
+        <MenuItem sx={{backgroundColor: theme.palette.secondary.main}}>
           <NavLink to={routeNames.contact} className="nav-link">
             Contact Us
           </NavLink>
